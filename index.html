@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Connection Engineering - Training Plan</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Vysus Brand Colors */
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --houston-pink: #f188f4;
+            --mumbai-magenta: #8e329c;
+            --hellerup-royal: #05275e;
+            --bath-sky: #4b81ef;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --scandinavia-rock: #485559;
+            --bergen-rain: #dadada;
+            --oslo-snow: #f8f8f8;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--trondheim-night);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background System */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background-layer.active {
+            opacity: 1;
+        }
+
+        .background-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%);
+        }
+
+        #bg-overview {
+            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=90');
+        }
+
+        #bg-entry {
+            background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&q=90');
+        }
+
+        #bg-senior {
+            background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=90');
+        }
+
+        #bg-lead {
+            background-image: url('https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1920&q=90');
+        }
+
+        #bg-principal {
+            background-image: url('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1920&q=90');
+        }
+
+        #bg-technical {
+            background-image: url('https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=1920&q=90');
+        }
+
+        #bg-design {
+            background-image: url('https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1920&q=90');
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 0.3rem;
+            padding: 0.4rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px) saturate(180%);
+            -webkit-backdrop-filter: blur(60px) saturate(180%);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            animation: floatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-wrap: wrap;
+            max-width: 95%;
+            justify-content: center;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50px;
+            z-index: -1;
+        }
+
+        .tab-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-btn:hover::before {
+            opacity: 0.4;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 227, 169, 0.6);
+        }
+
+        .tab-btn.active::before {
+            opacity: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            min-height: 100vh;
+            padding: 7rem 2rem 4rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glass Hero */
+        .glass-hero {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px) saturate(180%);
+            -webkit-backdrop-filter: blur(60px) saturate(180%);
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            text-align: center;
+            color: white;
+        }
+
+        .glass-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--stockholm-neon), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--stockholm-neon);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+            color: white;
+        }
+
+        .glass-card h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .glass-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--stockholm-neon);
+        }
+
+        /* Module Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(70px) saturate(200%);
+            -webkit-backdrop-filter: blur(70px) saturate(200%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 227, 169, 0.15), rgba(0, 84, 84, 0.15));
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(0, 227, 169, 0.4);
+            border-color: rgba(0, 227, 169, 0.4);
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 227, 169, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-level {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Level Badges */
+        .level-badge-entry {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+        }
+
+        .level-badge-senior {
+            background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal));
+        }
+
+        .level-badge-lead {
+            background: linear-gradient(135deg, var(--houston-pink), var(--mumbai-magenta));
+        }
+
+        .level-badge-principal {
+            background: linear-gradient(135deg, var(--orlando-red), var(--barcelona-dusk));
+        }
+
+        /* Module Status Indicators */
+        .module-card.coming-soon {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .module-card.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .module-card.coming-soon:hover::before {
+            opacity: 0;
+        }
+
+        .module-card.coming-soon .module-icon {
+            background: linear-gradient(135deg, var(--scandinavia-rock), var(--trondheim-night));
+            box-shadow: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .status-ready {
+            background: var(--stockholm-neon);
+            color: #000;
+        }
+
+        .status-coming {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Category Sections */
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .category-header h3 {
+            font-size: 2rem;
+            color: var(--stockholm-neon);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--stockholm-neon);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* Career Path Visual */
+        .career-path {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .career-step {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        .career-step::after {
+            content: '→';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--stockholm-neon);
+        }
+
+        .career-step:last-child::after {
+            display: none;
+        }
+
+        .career-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .career-modules {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .glass-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .career-step::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -1.5rem;
+                transform: translateX(50%);
+            }
+
+            .tab-navigation {
+                gap: 0.2rem;
+                padding: 0.3rem;
+                top: 1rem;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Backgrounds -->
+    <div class="background-container">
+        <div class="background-layer active" id="bg-overview"></div>
+        <div class="background-layer" id="bg-entry"></div>
+        <div class="background-layer" id="bg-senior"></div>
+        <div class="background-layer" id="bg-lead"></div>
+        <div class="background-layer" id="bg-principal"></div>
+        <div class="background-layer" id="bg-technical"></div>
+        <div class="background-layer" id="bg-design"></div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('overview')" data-tab="overview">
+            📋 Overview
+        </button>
+        <button class="tab-btn" onclick="switchTab('entry')" data-tab="entry">
+            🌱 Entry Level
+        </button>
+        <button class="tab-btn" onclick="switchTab('senior')" data-tab="senior">
+            ⚡ Senior
+        </button>
+        <button class="tab-btn" onclick="switchTab('lead')" data-tab="lead">
+            🎯 Lead
+        </button>
+        <button class="tab-btn" onclick="switchTab('principal')" data-tab="principal">
+            👑 Principal
+        </button>
+        <button class="tab-btn" onclick="switchTab('technical')" data-tab="technical">
+            🔧 Technical Skills
+        </button>
+        <button class="tab-btn" onclick="switchTab('design')" data-tab="design">
+            📝 Design
+        </button>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="content-container">
+
+        <!-- OVERVIEW TAB -->
+        <div class="tab-content active" id="overview-content">
+            <div class="glass-hero">
+                <h1>⚡ Grid Connection Engineering Training Plan</h1>
+                <p class="tagline">Comprehensive Career Development Framework</p>
+                <p class="subtitle">Building Excellence from Entry to Principal Level</p>
+            </div>
+
+            <div class="glass-card">
+                <h2>📊 Training Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">48</div>
+                        <div class="stat-label">Total Modules</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Career Levels</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Skill Categories</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Career Coverage</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>🎯 Career Progression Path</h2>
+                <div class="career-path">
+                    <div class="career-step">
+                        <div class="career-title">Entry Level</div>
+                        <div class="career-modules">12 Modules</div>
+                    </div>
+                    <div class="career-step">
+                        <div class="career-title">Senior Engineer</div>
+                        <div class="career-modules">12 Modules</div>
+                    </div>
+                    <div class="career-step">
+                        <div class="career-title">Lead Engineer</div>
+                        <div class="career-modules">12 Modules</div>
+                    </div>
+                    <div class="career-step">
+                        <div class="career-title">Principal Engineer</div>
+                        <div class="career-modules">12 Modules</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>🌟 Featured Module: AEMO GPS Document Process</h2>
+                <p style="text-align: center; color: rgba(255,255,255,0.85); font-size: 1.2rem; margin-bottom: 2rem;">
+                    Essential compliance training for grid connection professionals
+                </p>
+                <div class="modules-grid">
+                    <div class="module-card" onclick="window.location.href='module-aemo-gps-process.html'" style="border: 2px solid var(--stockholm-neon); box-shadow: 0 0 30px rgba(0, 227, 169, 0.3);">
+                        <div class="module-icon" style="font-size: 2.5rem; width: 90px; height: 90px;">⚡</div>
+                        <h3 class="module-title" style="font-size: 1.6rem;">AEMO GPS Document Process</h3>
+                        <p class="module-desc">
+                            Master the Generator Performance Standards submission process including NEM Clause 5.2.x stages,
+                            harmonics analysis, technical studies, and AEMO compliance requirements. Includes real project case studies.
+                        </p>
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <p style="color: var(--stockholm-neon); font-weight: 600; margin-bottom: 0.5rem;">
+                                ⏰ 60-75 minutes | ❓ 8 questions | ⭐ 800 points
+                            </p>
+                            <p style="color: var(--bath-sky); font-size: 0.95rem;">
+                                Topics: GPS process, NEM Clause 5.2.5, Harmonics, Power Quality, AEMO RFI management
+                            </p>
+                        </div>
+                        <span class="module-level level-badge-senior" style="margin-top: 1rem;">Senior+ Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>📚 Skill Categories</h2>
+                <div class="modules-grid">
+                    <div class="module-card" onclick="switchTab('technical')">
+                        <div class="module-icon">🔧</div>
+                        <h3 class="module-title">Technical Skills</h3>
+                        <p class="module-desc">Grid connection design, power systems analysis, protection schemes, and technical standards</p>
+                    </div>
+                    <div class="module-card" onclick="switchTab('entry')">
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">Project Management</h3>
+                        <p class="module-desc">Planning, execution, monitoring, risk management, and project delivery</p>
+                    </div>
+                    <div class="module-card" onclick="switchTab('entry')">
+                        <div class="module-icon">🤝</div>
+                        <h3 class="module-title">Client Communications</h3>
+                        <p class="module-desc">Stakeholder engagement, presentations, technical writing, and relationship building</p>
+                    </div>
+                    <div class="module-card" onclick="switchTab('entry')">
+                        <div class="module-icon">💡</div>
+                        <h3 class="module-title">Soft Skills</h3>
+                        <p class="module-desc">Leadership, problem-solving, teamwork, time management, and professional development</p>
+                    </div>
+                    <div class="module-card" onclick="switchTab('technical')">
+                        <div class="module-icon">⚖️</div>
+                        <h3 class="module-title">Regulatory & Compliance</h3>
+                        <p class="module-desc">Grid codes, planning regulations, HSE requirements, and industry standards</p>
+                    </div>
+                    <div class="module-card" onclick="switchTab('technical')">
+                        <div class="module-icon">💻</div>
+                        <h3 class="module-title">Software & Tools</h3>
+                        <p class="module-desc">Engineering software, simulation tools, documentation systems, and digital workflows</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENTRY LEVEL TAB -->
+        <div class="tab-content" id="entry-content">
+            <div class="glass-hero">
+                <h1>🌱 Entry Level Engineer</h1>
+                <p class="tagline">Foundation Skills for Grid Connection Engineering</p>
+                <p class="subtitle">14 Essential Modules for Career Launch</p>
+            </div>
+
+            <!-- Regulatory & AEMO Guidelines - FIRST (Foundation Knowledge) -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">📜</span> Regulatory Framework (Start Here)</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card" onclick="window.location.href='module-ner-chapter5-intro.html'" style="border: 2px solid var(--stockholm-neon); box-shadow: 0 0 20px rgba(0, 227, 169, 0.2);">
+                        <span class="status-badge status-ready">Ready</span>
+                        <div class="module-icon">📋</div>
+                        <h3 class="module-title">1. NER Chapter 5 Introduction</h3>
+                        <p class="module-desc">Start here! Comprehensive guide to Network Connection Access, Planning & Expansion. Understand the NEM connection process, Chapter 5 vs 5A, four connection stages, and key stakeholders (AEMO, TNSPs, DNSPs).</p>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--bath-sky);">
+                            45-60 min | 10 questions | 500 points
+                        </div>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card" onclick="window.location.href='module-access-standards.html'" style="border: 2px solid var(--stockholm-neon); box-shadow: 0 0 20px rgba(0, 227, 169, 0.2);">
+                        <span class="status-badge status-ready">Ready</span>
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">2. Access Standards & GPS Framework</h3>
+                        <p class="module-desc">Deep dive into Schedule 5.2 technical requirements. Master Automatic, Negotiated, and Minimum Access Standards. Learn the GPS template, S5.2.5 clauses, and simulation model requirements (PSS/E, PSCAD).</p>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--bath-sky);">
+                            60-90 min | 12 questions | 600 points
+                        </div>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft Skills -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">💡</span> Soft Skills</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎯</div>
+                        <h3 class="module-title">Professional Conduct & Ethics</h3>
+                        <p class="module-desc">Workplace behavior, ethical standards, and professional responsibilities</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">⏰</div>
+                        <h3 class="module-title">Time Management & Organization</h3>
+                        <p class="module-desc">Prioritization, task planning, and productivity fundamentals</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">👥</div>
+                        <h3 class="module-title">Teamwork & Collaboration</h3>
+                        <p class="module-desc">Working effectively in teams, contributing to group objectives</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Communications -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🤝</span> Client Communications</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📧</div>
+                        <h3 class="module-title">Professional Email Communication</h3>
+                        <p class="module-desc">Email etiquette, clear communication, and professional correspondence</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💬</div>
+                        <h3 class="module-title">Effective Meeting Participation</h3>
+                        <p class="module-desc">Meeting preparation, active listening, and contribution skills</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📝</div>
+                        <h3 class="module-title">Technical Writing Basics</h3>
+                        <p class="module-desc">Clear technical documentation, report writing fundamentals</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Management -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">📊</span> Project Management</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🔄</div>
+                        <h3 class="module-title">Project Lifecycle Overview</h3>
+                        <p class="module-desc">Understanding project phases from initiation to closure</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📋</div>
+                        <h3 class="module-title">Task Tracking & Reporting</h3>
+                        <p class="module-desc">Using project tools, status updates, and progress reporting</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">✅</div>
+                        <h3 class="module-title">Quality Control Basics</h3>
+                        <p class="module-desc">Quality standards, checking procedures, and error prevention</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🔧</span> Technical Skills</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">⚡</div>
+                        <h3 class="module-title">Grid Connection Fundamentals</h3>
+                        <p class="module-desc">Basic concepts, terminology, and system components</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💻</div>
+                        <h3 class="module-title">Essential Software Tools</h3>
+                        <p class="module-desc">CAD basics, engineering software introduction, document management</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🛡️</div>
+                        <h3 class="module-title">Safety & Compliance Awareness</h3>
+                        <p class="module-desc">HSE fundamentals, regulatory basics, and safe working practices</p>
+                        <span class="module-level level-badge-entry">Entry Level</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SENIOR ENGINEER TAB -->
+        <div class="tab-content" id="senior-content">
+            <div class="glass-hero">
+                <h1>⚡ Senior Engineer</h1>
+                <p class="tagline">Advanced Skills & Independent Delivery</p>
+                <p class="subtitle">13 Modules for Technical Excellence</p>
+            </div>
+
+            <!-- Technical Skills - FIRST for Senior (Core competency) -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🔧</span> Technical Skills</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card" onclick="window.location.href='module-aemo-gps-process.html'" style="border: 2px solid var(--stockholm-neon); box-shadow: 0 0 20px rgba(0, 227, 169, 0.2);">
+                        <span class="status-badge status-ready">Ready</span>
+                        <div class="module-icon">📋</div>
+                        <h3 class="module-title">AEMO GPS Document Process</h3>
+                        <p class="module-desc">Complete guide to GPS submissions, NEM Clause 5.2.x requirements, harmonics analysis, RFI management, and commissioning. Real project case studies included.</p>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--bath-sky);">
+                            60-75 min | 8 questions | 800 points
+                        </div>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">⚡</div>
+                        <h3 class="module-title">Advanced Power Systems Analysis</h3>
+                        <p class="module-desc">Load flow, fault analysis, system stability studies</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🛡️</div>
+                        <h3 class="module-title">Protection & Control Schemes</h3>
+                        <p class="module-desc">Protection principles, relay coordination, control systems</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📜</div>
+                        <h3 class="module-title">Grid Code Compliance</h3>
+                        <p class="module-desc">Understanding and applying grid code requirements</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft Skills -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">💡</span> Soft Skills</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎓</div>
+                        <h3 class="module-title">Mentoring Junior Engineers</h3>
+                        <p class="module-desc">Coaching techniques, knowledge transfer, and supporting development</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🧩</div>
+                        <h3 class="module-title">Advanced Problem Solving</h3>
+                        <p class="module-desc">Root cause analysis, creative solutions, and decision frameworks</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💪</div>
+                        <h3 class="module-title">Influence Without Authority</h3>
+                        <p class="module-desc">Persuasion, negotiation, and building consensus</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Communications -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🤝</span> Client Communications</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🗣️</div>
+                        <h3 class="module-title">Leading Client Meetings</h3>
+                        <p class="module-desc">Agenda setting, facilitation, and managing discussions</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">Technical Presentations</h3>
+                        <p class="module-desc">Creating compelling presentations, explaining complex concepts</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎭</div>
+                        <h3 class="module-title">Stakeholder Management</h3>
+                        <p class="module-desc">Identifying stakeholders, managing expectations, building relationships</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Management -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">📊</span> Project Management</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📅</div>
+                        <h3 class="module-title">Project Planning & Scheduling</h3>
+                        <p class="module-desc">Detailed planning, critical path, resource allocation</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">⚠️</div>
+                        <h3 class="module-title">Risk Management</h3>
+                        <p class="module-desc">Risk identification, assessment, mitigation strategies</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💰</div>
+                        <h3 class="module-title">Budget Management & Control</h3>
+                        <p class="module-desc">Cost tracking, forecasting, and financial reporting</p>
+                        <span class="module-level level-badge-senior">Senior</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEAD ENGINEER TAB -->
+        <div class="tab-content" id="lead-content">
+            <div class="glass-hero">
+                <h1>🎯 Lead Engineer</h1>
+                <p class="tagline">Team Leadership & Technical Authority</p>
+                <p class="subtitle">12 Modules for Leadership Excellence</p>
+            </div>
+
+            <!-- Soft Skills -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">💡</span> Leadership Skills</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">👨‍💼</div>
+                        <h3 class="module-title">Team Leadership & Management</h3>
+                        <p class="module-desc">Building teams, delegation, performance management</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🤝</div>
+                        <h3 class="module-title">Conflict Resolution</h3>
+                        <p class="module-desc">Managing disputes, mediation, difficult conversations</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🔄</div>
+                        <h3 class="module-title">Change Management</h3>
+                        <p class="module-desc">Leading change initiatives, managing resistance</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Communications -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🤝</span> Client & Business Development</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💼</div>
+                        <h3 class="module-title">Commercial Awareness</h3>
+                        <p class="module-desc">Business understanding, profitability, commercial models</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📄</div>
+                        <h3 class="module-title">Proposal Development & Bidding</h3>
+                        <p class="module-desc">Bid strategy, proposal writing, competitive positioning</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📋</div>
+                        <h3 class="module-title">Contract Negotiation</h3>
+                        <p class="module-desc">Negotiation strategy, contract terms, risk allocation</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Management -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">📊</span> Program Management</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎯</div>
+                        <h3 class="module-title">Multi-Project Management</h3>
+                        <p class="module-desc">Managing portfolios, resource optimization, prioritization</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🚨</div>
+                        <h3 class="module-title">Project Recovery & Turnaround</h3>
+                        <p class="module-desc">Identifying issues, recovery planning, stakeholder management</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">✅</div>
+                        <h3 class="module-title">Quality Assurance & Governance</h3>
+                        <p class="module-desc">QA processes, audit preparation, governance frameworks</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🔧</span> Technical Leadership</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🔍</div>
+                        <h3 class="module-title">Technical Design Review</h3>
+                        <p class="module-desc">Review processes, technical assurance, approval workflows</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💡</div>
+                        <h3 class="module-title">Innovation & Best Practice</h3>
+                        <p class="module-desc">Driving innovation, implementing improvements, lessons learned</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📐</div>
+                        <h3 class="module-title">Technical Standards Development</h3>
+                        <p class="module-desc">Creating standards, procedures, technical guidance</p>
+                        <span class="module-level level-badge-lead">Lead</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRINCIPAL ENGINEER TAB -->
+        <div class="tab-content" id="principal-content">
+            <div class="glass-hero">
+                <h1>👑 Principal Engineer</h1>
+                <p class="tagline">Strategic Leadership & Technical Vision</p>
+                <p class="subtitle">12 Modules for Executive Excellence</p>
+            </div>
+
+            <!-- Leadership & Strategy -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">💡</span> Strategic Leadership</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎯</div>
+                        <h3 class="module-title">Strategic Thinking & Planning</h3>
+                        <p class="module-desc">Long-term vision, strategy development, organizational impact</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">👑</div>
+                        <h3 class="module-title">Executive Leadership</h3>
+                        <p class="module-desc">Senior leadership, board interactions, organizational influence</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🌟</div>
+                        <h3 class="module-title">Talent Development & Succession</h3>
+                        <p class="module-desc">Building talent pipelines, succession planning, culture development</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Development -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🤝</span> Business Strategy</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📈</div>
+                        <h3 class="module-title">Market Analysis & Strategy</h3>
+                        <p class="module-desc">Market trends, competitive analysis, growth opportunities</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🤝</div>
+                        <h3 class="module-title">Strategic Client Relationships</h3>
+                        <p class="module-desc">Key account management, partnership development, long-term relationships</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📢</div>
+                        <h3 class="module-title">Thought Leadership & Influence</h3>
+                        <p class="module-desc">Industry influence, public speaking, publishing, brand development</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program Governance -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">📊</span> Portfolio Governance</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">Portfolio Management</h3>
+                        <p class="module-desc">Portfolio strategy, investment decisions, value optimization</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">💰</div>
+                        <h3 class="module-title">Financial Strategy & P&L</h3>
+                        <p class="module-desc">Business unit financials, profitability, investment decisions</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">⚖️</div>
+                        <h3 class="module-title">Corporate Governance & Compliance</h3>
+                        <p class="module-desc">Governance frameworks, compliance oversight, risk management</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Excellence -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3><span class="category-icon">🔧</span> Technical Authority</h3>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🔮</div>
+                        <h3 class="module-title">Technical Vision & Strategy</h3>
+                        <p class="module-desc">Technology roadmaps, innovation strategy, R&D direction</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🌐</div>
+                        <h3 class="module-title">Industry Standards & Engagement</h3>
+                        <p class="module-desc">Standards committees, industry bodies, regulatory influence</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                    <div class="module-card coming-soon">
+                        <span class="status-badge status-coming">Coming Soon</span>
+                        <div class="module-icon">🎓</div>
+                        <h3 class="module-title">Technical Advisory & Expert Witness</h3>
+                        <p class="module-desc">Expert advice, dispute resolution, technical authority</p>
+                        <span class="module-level level-badge-principal">Principal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TECHNICAL SKILLS TAB -->
+        <div class="tab-content" id="technical-content">
+            <div class="glass-hero">
+                <h1>🔧 Technical Skills Deep Dive</h1>
+                <p class="tagline">Grid Connection Engineering Competencies</p>
+                <p class="subtitle">Specialized Technical Training Across All Levels</p>
+            </div>
+
+            <div class="glass-card">
+                <h2>⚡ Core Technical Modules</h2>
+                <p style="text-align: center; color: rgba(255,255,255,0.8); font-size: 1.1rem; margin-bottom: 2rem;">
+                    Comprehensive technical training in power systems, grid connections, and renewable energy integration
+                </p>
+
+                <div class="modules-grid">
+                    <div class="module-card" onclick="window.location.href='module-aemo-gps-process.html'" style="border: 2px solid var(--stockholm-neon); box-shadow: 0 0 30px rgba(0, 227, 169, 0.3); grid-column: 1 / -1;">
+                        <div style="display: flex; align-items: center; gap: 2rem;">
+                            <div class="module-icon" style="font-size: 3rem; width: 100px; height: 100px;">⚡</div>
+                            <div style="flex: 1;">
+                                <div style="display: inline-block; background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); color: white; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem;">
+                                    🌟 FEATURED MODULE #1
+                                </div>
+                                <h3 class="module-title" style="font-size: 2rem; margin-bottom: 1rem;">AEMO GPS Document Process</h3>
+                                <p class="module-desc" style="font-size: 1.1rem;">
+                                    Complete training on Generator Performance Standards submission including NEM Clause 5.2.x stages,
+                                    harmonics analysis per AS/NZS 61000.3.6, technical studies, and AEMO compliance. Real project case studies from solar, wind, and BESS connections.
+                                </p>
+                                <div style="margin-top: 1rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+                                    <span style="color: var(--stockholm-neon);">⏰ 60-75 min</span>
+                                    <span style="color: var(--stockholm-neon);">❓ 8 questions</span>
+                                    <span style="color: var(--stockholm-neon);">⭐ 800 points</span>
+                                    <span style="color: var(--bath-sky);">📋 NEM Clause 5.2.5</span>
+                                    <span style="color: var(--bath-sky);">⚡ Harmonics</span>
+                                </div>
+                                <span class="module-level level-badge-senior" style="margin-top: 1rem; display: inline-block;">Senior+ Level</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-power-systems-fundamentals')">
+                        <div class="module-icon">⚡</div>
+                        <h3 class="module-title">Power Systems Fundamentals</h3>
+                        <p class="module-desc">AC/DC systems, three-phase power, transformers, generation types</p>
+                        <span class="module-level level-badge-entry">All Levels</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-load-flow-analysis')">
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">Load Flow Analysis</h3>
+                        <p class="module-desc">Power flow studies, voltage analysis, network optimization</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-fault-analysis')">
+                        <div class="module-icon">⚠️</div>
+                        <h3 class="module-title">Fault Level Analysis</h3>
+                        <p class="module-desc">Short circuit calculations, equipment ratings, fault clearance</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-protection-coordination')">
+                        <div class="module-icon">🛡️</div>
+                        <h3 class="module-title">Protection Coordination</h3>
+                        <p class="module-desc">Relay settings, discrimination, grading studies</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-grid-connection-design')">
+                        <div class="module-icon">🔌</div>
+                        <h3 class="module-title">Grid Connection Design</h3>
+                        <p class="module-desc">Connection arrangements, substation design, cable/OHL design</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-renewable-integration')">
+                        <div class="module-icon">🌱</div>
+                        <h3 class="module-title">Renewable Energy Integration</h3>
+                        <p class="module-desc">Solar, wind, battery storage connection requirements</p>
+                        <span class="module-level level-badge-entry">All Levels</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-grid-codes')">
+                        <div class="module-icon">📜</div>
+                        <h3 class="module-title">Grid Code Requirements</h3>
+                        <p class="module-desc">G99, G100, ENA standards, DNO/TSO requirements</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-earthing-systems')">
+                        <div class="module-icon">⚡</div>
+                        <h3 class="module-title">Earthing & Lightning Protection</h3>
+                        <p class="module-desc">Earth electrode design, touch/step voltages, lightning protection</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-power-quality')">
+                        <div class="module-icon">📈</div>
+                        <h3 class="module-title">Power Quality Analysis</h3>
+                        <p class="module-desc">Harmonics, flicker, voltage unbalance, mitigation</p>
+                        <span class="module-level level-badge-lead">Lead+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-scada-control')">
+                        <div class="module-icon">💻</div>
+                        <h3 class="module-title">SCADA & Control Systems</h3>
+                        <p class="module-desc">Control philosophy, communications, automation</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-hv-equipment')">
+                        <div class="module-icon">🔧</div>
+                        <h3 class="module-title">HV Equipment Selection</h3>
+                        <p class="module-desc">Switchgear, transformers, circuit breakers, specifications</p>
+                        <span class="module-level level-badge-senior">Senior+</span>
+                    </div>
+                    <div class="module-card" onclick="openModule('tech-simulation-tools')">
+                        <div class="module-icon">💻</div>
+                        <h3 class="module-title">Engineering Software & Simulation</h3>
+                        <p class="module-desc">DIgSILENT, ETAP, PSSE, AutoCAD, specialized tools</p>
+                        <span class="module-level level-badge-entry">All Levels</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESIGN TAB -->
+        <div class="tab-content" id="design-content">
+            <div class="glass-hero">
+                <h1>📝 Design Notes</h1>
+                <p class="tagline">Planning & Collaboration Space</p>
+                <p class="subtitle">Temporary notes for designing this training plan - remove when complete</p>
+            </div>
+
+            <div class="glass-card">
+                <h2>Priority Training Requirements</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">Click items to mark as complete. These are saved automatically.</p>
+
+                <div id="priority-checklist" class="design-checklist">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                    <input type="text" id="new-priority-item" placeholder="Add new priority item..." style="flex: 1; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1rem;">
+                    <button onclick="addPriorityItem()" style="padding: 0.75rem 1.5rem; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); color: white; font-weight: 600; cursor: pointer;">Add</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>Next Steps</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">Track what needs to be done next.</p>
+
+                <div id="nextsteps-checklist" class="design-checklist">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                    <input type="text" id="new-nextstep-item" placeholder="Add next step..." style="flex: 1; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1rem;">
+                    <button onclick="addNextStepItem()" style="padding: 0.75rem 1.5rem; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal)); color: white; font-weight: 600; cursor: pointer;">Add</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2>General Notes</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">Free-form notes for discussion with colleagues.</p>
+
+                <textarea id="design-notes" placeholder="Write your notes here... Ideas, feedback, decisions, etc." style="width: 100%; min-height: 300px; padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1rem; line-height: 1.6; resize: vertical; font-family: inherit;"></textarea>
+
+                <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span id="notes-status" style="color: var(--stockholm-neon); font-size: 0.9rem;"></span>
+                    <button onclick="clearAllDesignData()" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--orlando-red); background: transparent; color: var(--orlando-red); font-size: 0.85rem; cursor: pointer;">Clear All Data</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        /* Design Tab Styles */
+        .design-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .checklist-item.completed {
+            opacity: 0.6;
+        }
+
+        .checklist-item.completed .item-text {
+            text-decoration: line-through;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid var(--stockholm-neon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.completed .checklist-checkbox {
+            background: var(--stockholm-neon);
+        }
+
+        .checklist-checkbox::after {
+            content: '';
+            width: 10px;
+            height: 6px;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(-45deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .checklist-item.completed .checklist-checkbox::after {
+            opacity: 1;
+        }
+
+        .item-text {
+            flex: 1;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .item-delete {
+            opacity: 0;
+            color: var(--orlando-red);
+            font-size: 1.2rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .checklist-item:hover .item-delete {
+            opacity: 1;
+        }
+
+        #design-notes:focus {
+            outline: none;
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.2);
+        }
+
+        #new-priority-item:focus,
+        #new-nextstep-item:focus {
+            outline: none;
+            border-color: var(--stockholm-neon);
+        }
+    </style>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab content
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            // Add active class to selected tab button
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+
+            // Change background
+            changeBackground(tabName);
+        }
+
+        // Background changing functionality
+        function changeBackground(tabName) {
+            const backgrounds = document.querySelectorAll('.background-layer');
+            backgrounds.forEach(bg => bg.classList.remove('active'));
+
+            const activeBg = document.getElementById('bg-' + tabName);
+            if (activeBg) {
+                activeBg.classList.add('active');
+            }
+        }
+
+        // Open module (will link to module template)
+        function openModule(moduleId) {
+            // Redirect to module template with query parameter
+            window.location.href = `module-template.html?module=${moduleId}`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            changeBackground('overview');
+            initDesignTab();
+        });
+
+        // ========== DESIGN TAB FUNCTIONALITY ==========
+
+        // Storage keys
+        const STORAGE_KEYS = {
+            priorities: 'training-plan-priorities',
+            nextSteps: 'training-plan-nextsteps',
+            notes: 'training-plan-notes'
+        };
+
+        // Initialize design tab
+        function initDesignTab() {
+            loadPriorityItems();
+            loadNextStepItems();
+            loadNotes();
+
+            // Auto-save notes on input
+            const notesTextarea = document.getElementById('design-notes');
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', debounce(saveNotes, 500));
+            }
+
+            // Allow Enter key to add items
+            document.getElementById('new-priority-item')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addPriorityItem();
+            });
+            document.getElementById('new-nextstep-item')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addNextStepItem();
+            });
+        }
+
+        // Debounce helper
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // ===== Priority Items =====
+        function loadPriorityItems() {
+            const items = JSON.parse(localStorage.getItem(STORAGE_KEYS.priorities) || '[]');
+            renderChecklist('priority-checklist', items, 'priority');
+        }
+
+        function savePriorityItems(items) {
+            localStorage.setItem(STORAGE_KEYS.priorities, JSON.stringify(items));
+        }
+
+        function addPriorityItem() {
+            const input = document.getElementById('new-priority-item');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const items = JSON.parse(localStorage.getItem(STORAGE_KEYS.priorities) || '[]');
+            items.push({ id: Date.now(), text, completed: false });
+            savePriorityItems(items);
+            renderChecklist('priority-checklist', items, 'priority');
+            input.value = '';
+        }
+
+        // ===== Next Steps =====
+        function loadNextStepItems() {
+            const items = JSON.parse(localStorage.getItem(STORAGE_KEYS.nextSteps) || '[]');
+            renderChecklist('nextsteps-checklist', items, 'nextstep');
+        }
+
+        function saveNextStepItems(items) {
+            localStorage.setItem(STORAGE_KEYS.nextSteps, JSON.stringify(items));
+        }
+
+        function addNextStepItem() {
+            const input = document.getElementById('new-nextstep-item');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const items = JSON.parse(localStorage.getItem(STORAGE_KEYS.nextSteps) || '[]');
+            items.push({ id: Date.now(), text, completed: false });
+            saveNextStepItems(items);
+            renderChecklist('nextsteps-checklist', items, 'nextstep');
+            input.value = '';
+        }
+
+        // ===== Render Checklist =====
+        function renderChecklist(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = items.map(item => `
+                <div class="checklist-item ${item.completed ? 'completed' : ''}" data-id="${item.id}">
+                    <div class="checklist-checkbox" onclick="toggleItem('${type}', ${item.id})"></div>
+                    <span class="item-text" onclick="toggleItem('${type}', ${item.id})">${escapeHtml(item.text)}</span>
+                    <span class="item-delete" onclick="deleteItem('${type}', ${item.id})">&times;</span>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleItem(type, id) {
+            const key = type === 'priority' ? STORAGE_KEYS.priorities : STORAGE_KEYS.nextSteps;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            const item = items.find(i => i.id === id);
+            if (item) {
+                item.completed = !item.completed;
+                localStorage.setItem(key, JSON.stringify(items));
+                renderChecklist(type === 'priority' ? 'priority-checklist' : 'nextsteps-checklist', items, type);
+            }
+        }
+
+        function deleteItem(type, id) {
+            const key = type === 'priority' ? STORAGE_KEYS.priorities : STORAGE_KEYS.nextSteps;
+            let items = JSON.parse(localStorage.getItem(key) || '[]');
+            items = items.filter(i => i.id !== id);
+            localStorage.setItem(key, JSON.stringify(items));
+            renderChecklist(type === 'priority' ? 'priority-checklist' : 'nextsteps-checklist', items, type);
+        }
+
+        // ===== Notes =====
+        function loadNotes() {
+            const notes = localStorage.getItem(STORAGE_KEYS.notes) || '';
+            const textarea = document.getElementById('design-notes');
+            if (textarea) {
+                textarea.value = notes;
+            }
+        }
+
+        function saveNotes() {
+            const textarea = document.getElementById('design-notes');
+            if (textarea) {
+                localStorage.setItem(STORAGE_KEYS.notes, textarea.value);
+                showSaveStatus();
+            }
+        }
+
+        function showSaveStatus() {
+            const status = document.getElementById('notes-status');
+            if (status) {
+                status.textContent = 'Saved';
+                setTimeout(() => status.textContent = '', 2000);
+            }
+        }
+
+        // ===== Clear All =====
+        function clearAllDesignData() {
+            if (confirm('Are you sure you want to clear all design notes and checklists? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEYS.priorities);
+                localStorage.removeItem(STORAGE_KEYS.nextSteps);
+                localStorage.removeItem(STORAGE_KEYS.notes);
+                loadPriorityItems();
+                loadNextStepItems();
+                loadNotes();
+            }
+        }
+    </script>
+</body>
+</html>
