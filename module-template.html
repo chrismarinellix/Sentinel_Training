@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Engineering Training Module</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Vysus Brand Colors */
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --houston-pink: #f188f4;
+            --mumbai-magenta: #8e329c;
+            --hellerup-royal: #05275e;
+            --bath-sky: #4b81ef;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --scandinavia-rock: #485559;
+            --bergen-rain: #dadada;
+            --oslo-snow: #f8f8f8;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--trondheim-night);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background System */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=95');
+        }
+
+        .background-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.75) 100%);
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            animation: floatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .tab-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50px;
+            z-index: -1;
+        }
+
+        .tab-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-btn:hover::before {
+            opacity: 0.4;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 227, 169, 0.5);
+        }
+
+        .tab-btn.active::before {
+            opacity: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem 2rem;
+            position: relative;
+        }
+
+        .tab-content {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 8rem;
+            left: 0;
+            right: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(40px);
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            top: 0;
+            transform: translateY(0);
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 227, 169, 0.2);
+        }
+
+        .glass-hero {
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+        }
+
+        .glass-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--stockholm-neon), white, var(--bath-sky));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-hero .tagline {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+            color: var(--stockholm-neon);
+        }
+
+        .glass-hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.85;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Content Sections */
+        .content-section {
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .content-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--stockholm-neon);
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Quiz Section */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px);
+            border-radius: 25px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .answer-option {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .answer-option:hover {
+            background: rgba(0, 227, 169, 0.1);
+            border-color: var(--stockholm-neon);
+            transform: translateX(10px);
+        }
+
+        .answer-option.selected {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.3);
+        }
+
+        .answer-option.correct {
+            background: rgba(0, 227, 169, 0.3);
+            border-color: var(--stockholm-neon);
+        }
+
+        .answer-option.incorrect {
+            background: rgba(249, 45, 99, 0.2);
+            border-color: var(--orlando-red);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 227, 169, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            height: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.5);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: rgba(75, 129, 239, 0.15);
+            border-left: 4px solid var(--bath-sky);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: var(--bath-sky);
+            margin-bottom: 0.5rem;
+        }
+
+        .success-box {
+            background: rgba(0, 227, 169, 0.15);
+            border-left: 4px solid var(--stockholm-neon);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .success-box h4 {
+            color: var(--stockholm-neon);
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: rgba(249, 45, 99, 0.15);
+            border-left: 4px solid var(--orlando-red);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: var(--orlando-red);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Back Button */
+        .back-to-plan {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 9999;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .glass-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .glass-card {
+                padding: 2rem;
+            }
+
+            .content-section h2 {
+                font-size: 2rem;
+            }
+
+            .tab-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Background -->
+    <div class="background-container">
+        <div class="background-layer"></div>
+    </div>
+
+    <!-- Back to Training Plan Button -->
+    <div class="back-to-plan">
+        <button class="back-btn" onclick="window.location.href='training-plan.html'">
+            ← Back to Training Plan
+        </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('welcome')" data-tab="welcome">
+            <span>👋 Welcome</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('training')" data-tab="training">
+            <span>🎯 Training</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('quiz')" data-tab="quiz">
+            <span>❓ Quiz</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('reference')" data-tab="reference">
+            <span>📚 Reference</span>
+        </button>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="content-container">
+
+        <!-- WELCOME TAB -->
+        <div class="tab-content active" id="welcome-content">
+            <div class="glass-card glass-hero">
+                <h1><span id="module-icon">⚡</span> <span id="module-title">Module Title</span></h1>
+                <p class="tagline" id="module-tagline">Module Tagline</p>
+                <p class="subtitle" id="module-level">Entry Level | Career Development</p>
+                <div style="margin-top: 3rem;">
+                    <button class="btn btn-primary" onclick="switchTab('training')">
+                        🎯 Start Learning
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchTab('reference')">
+                        📚 Quick Reference
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>📋 Module Overview</h2>
+                    <p id="module-overview">
+                        This module provides comprehensive training on essential skills for grid connection engineering professionals.
+                        You'll learn key concepts, best practices, and practical applications that you can immediately apply in your role.
+                    </p>
+                </div>
+
+                <div class="content-section">
+                    <h3>🎯 Learning Objectives</h3>
+                    <ul id="learning-objectives">
+                        <li>Understand core concepts and principles</li>
+                        <li>Apply best practices in real-world scenarios</li>
+                        <li>Develop practical skills for immediate application</li>
+                        <li>Build confidence in your technical abilities</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h3>⏱️ Module Details</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏰</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">30-45 minutes</div>
+                            <div style="opacity: 0.8;">Estimated Duration</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">❓</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">5 Questions</div>
+                            <div style="opacity: 0.8;">Knowledge Check</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⭐</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">500 Points</div>
+                            <div style="opacity: 0.8;">Maximum Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING TAB -->
+        <div class="tab-content" id="training-content">
+            <div class="glass-card glass-hero">
+                <h1>🎯 Training Content</h1>
+                <p class="tagline">Build Your Expertise</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" id="training-content-main">
+                    <h2>📚 Core Concepts</h2>
+
+                    <h3>Introduction</h3>
+                    <p>
+                        This section covers the fundamental concepts and principles that form the foundation of this topic.
+                        Understanding these core ideas is essential for developing expertise in this area.
+                    </p>
+
+                    <div class="info-box">
+                        <h4>💡 Key Insight</h4>
+                        <p>Mastering the fundamentals is crucial for success in more advanced topics. Take your time to understand each concept thoroughly.</p>
+                    </div>
+
+                    <h3>Key Principles</h3>
+                    <ul>
+                        <li><strong>Principle 1:</strong> Foundation concepts that underpin all related work</li>
+                        <li><strong>Principle 2:</strong> Best practices that ensure quality and efficiency</li>
+                        <li><strong>Principle 3:</strong> Standards and regulations that must be followed</li>
+                        <li><strong>Principle 4:</strong> Safety considerations and risk management</li>
+                    </ul>
+
+                    <h3>Practical Application</h3>
+                    <p>
+                        Here's how you apply these concepts in real-world scenarios:
+                    </p>
+                    <ol>
+                        <li>Assess the situation and identify requirements</li>
+                        <li>Apply relevant principles and standards</li>
+                        <li>Develop solutions that meet all criteria</li>
+                        <li>Review and validate your approach</li>
+                        <li>Document your work clearly and thoroughly</li>
+                    </ol>
+
+                    <div class="success-box">
+                        <h4>✅ Best Practice</h4>
+                        <p>Always document your decisions and rationale. This creates a valuable reference for future projects and helps others learn from your experience.</p>
+                    </div>
+
+                    <h3>Common Challenges</h3>
+                    <p>
+                        Be aware of these common pitfalls and how to avoid them:
+                    </p>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Watch Out For</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Rushing without proper planning</li>
+                            <li>Overlooking regulatory requirements</li>
+                            <li>Failing to communicate effectively with stakeholders</li>
+                            <li>Not documenting assumptions and decisions</li>
+                        </ul>
+                    </div>
+
+                    <h3>Next Steps</h3>
+                    <p>
+                        Once you've reviewed the training content, test your knowledge with the quiz.
+                        You'll need to score at least 70% to complete this module successfully.
+                    </p>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn btn-primary" onclick="switchTab('quiz')">
+                            Take the Quiz →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ TAB -->
+        <div class="tab-content" id="quiz-content">
+            <div class="glass-card glass-hero">
+                <h1>❓ Knowledge Check</h1>
+                <p class="tagline">Test Your Understanding</p>
+                <div class="progress-glass">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;" id="quiz-progress-text">0 of 5 questions completed</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="glass-card quiz-card">
+                    <div class="question-text" id="question-text">
+                        Sample Question: What is the primary purpose of this training module?
+                    </div>
+
+                    <div class="answer-option" onclick="selectAnswer(0)">
+                        A) To provide comprehensive training on essential concepts
+                    </div>
+                    <div class="answer-option" onclick="selectAnswer(1)">
+                        B) To replace hands-on experience
+                    </div>
+                    <div class="answer-option" onclick="selectAnswer(2)">
+                        C) To meet compliance requirements only
+                    </div>
+                    <div class="answer-option" onclick="selectAnswer(3)">
+                        D) To provide entertainment
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="previousQuestion()">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextQuestion()">Next →</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="text-align: center; display: none;" id="results-card">
+                    <h2 style="font-size: 3rem; margin-bottom: 1rem;">🎉 Quiz Complete!</h2>
+                    <div style="font-size: 4rem; margin: 2rem 0; color: var(--stockholm-neon);" id="final-score">80%</div>
+                    <h3 style="margin-bottom: 2rem;" id="result-message">Good Job!</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="retakeQuiz()">↻ Retake Quiz</button>
+                        <button class="btn btn-primary" onclick="window.location.href='training-plan.html'">← Back to Training Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENCE TAB -->
+        <div class="tab-content" id="reference-content">
+            <div class="glass-card glass-hero">
+                <h1>📚 Quick Reference</h1>
+                <p class="tagline">Key Information at Your Fingertips</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>📋 Key Takeaways</h2>
+                    <ul>
+                        <li>Core concept 1: Brief description of essential knowledge</li>
+                        <li>Core concept 2: Important principle to remember</li>
+                        <li>Core concept 3: Critical standard or requirement</li>
+                        <li>Core concept 4: Best practice for implementation</li>
+                        <li>Core concept 5: Common pitfall to avoid</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>🔧 Practical Tools</h2>
+                    <h3>Checklists</h3>
+                    <ul>
+                        <li>☐ Step 1: Initial assessment and planning</li>
+                        <li>☐ Step 2: Research and gather requirements</li>
+                        <li>☐ Step 3: Develop solution approach</li>
+                        <li>☐ Step 4: Review and validate</li>
+                        <li>☐ Step 5: Document and communicate</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>📖 Additional Resources</h2>
+                    <div class="info-box">
+                        <h4>📚 Recommended Reading</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Industry standards and guidelines</li>
+                            <li>Technical reference manuals</li>
+                            <li>Case studies and examples</li>
+                            <li>Best practice guides</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2>👥 Need Help?</h2>
+                    <p>
+                        If you have questions or need support:
+                    </p>
+                    <ul>
+                        <li>Contact your line manager or mentor</li>
+                        <li>Reach out to subject matter experts</li>
+                        <li>Join internal discussion forums</li>
+                        <li>Access additional training resources</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Get module ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const moduleId = urlParams.get('module') || 'default';
+
+        // Module data structure (this would typically come from a database or JSON file)
+        const moduleData = {
+            'default': {
+                icon: '⚡',
+                title: 'Sample Training Module',
+                tagline: 'Building Essential Skills',
+                level: 'All Levels | Professional Development',
+                overview: 'This is a sample training module template that can be customized for any training topic within grid connection engineering.',
+                objectives: [
+                    'Understand core concepts and principles',
+                    'Apply best practices in real-world scenarios',
+                    'Develop practical skills for immediate application',
+                    'Build confidence in your technical abilities'
+                ]
+            }
+            // Add more module definitions here as needed
+        };
+
+        // Load module data
+        function loadModuleData() {
+            const module = moduleData[moduleId] || moduleData['default'];
+
+            document.getElementById('module-icon').textContent = module.icon;
+            document.getElementById('module-title').textContent = module.title;
+            document.getElementById('module-tagline').textContent = module.tagline;
+            document.getElementById('module-level').textContent = module.level;
+            document.getElementById('module-overview').textContent = module.overview;
+
+            // Load objectives
+            const objectivesList = document.getElementById('learning-objectives');
+            objectivesList.innerHTML = module.objectives.map(obj => `<li>${obj}</li>`).join('');
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+        }
+
+        // Quiz functionality (basic example)
+        let currentQuestion = 0;
+        let selectedAnswers = [];
+
+        function selectAnswer(index) {
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach(option => option.classList.remove('selected'));
+            options[index].classList.add('selected');
+            selectedAnswers[currentQuestion] = index;
+        }
+
+        function nextQuestion() {
+            // In a real implementation, this would load the next question
+            alert('Quiz functionality is a placeholder. Implement actual quiz logic based on your requirements.');
+        }
+
+        function previousQuestion() {
+            alert('Quiz functionality is a placeholder. Implement actual quiz logic based on your requirements.');
+        }
+
+        function retakeQuiz() {
+            currentQuestion = 0;
+            selectedAnswers = [];
+            document.getElementById('results-card').style.display = 'none';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadModuleData();
+        });
+    </script>
+</body>
+</html>

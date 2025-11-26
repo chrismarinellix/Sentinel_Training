@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.aemc.gov.au)",
+      "WebFetch(domain:www.aemo.com.au)",
+      "WebSearch",
+      "WebFetch(domain:electricalconnection.com.au)",
+      "WebFetch(domain:www.gses.com.au)",
+      "WebFetch(domain:aemo.com.au)",
+      "WebFetch(domain:docs.gridmo.io)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
