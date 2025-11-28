@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Standards & GPS Framework | Grid Engineering Training</title>
+    <script>
+        // Draft expiry - locks after 10 days from creation
+        (function() {
+            const CREATED_DATE = new Date('2025-01-26');
+            const EXPIRY_DAYS = 10;
+            const now = new Date();
+            const diffTime = now - CREATED_DATE;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= EXPIRY_DAYS) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1d1d1b;color:white;font-family:sans-serif;text-align:center;padding:2rem;"><div><h1 style="color:#f92d63;font-size:3rem;margin-bottom:1rem;">Draft Expired</h1><p style="font-size:1.2rem;opacity:0.8;">This draft module expired on ' + new Date(CREATED_DATE.getTime() + EXPIRY_DAYS * 24 * 60 * 60 * 1000).toLocaleDateString() + '</p><p style="margin-top:1rem;opacity:0.6;">Contact the training team for the current version.</p><button onclick="window.location.href=\'training-plan.html\'" style="margin-top:2rem;padding:1rem 2rem;background:#00E3A9;border:none;border-radius:50px;color:#000;font-weight:bold;cursor:pointer;">Back to Training Plan</button></div></div>';
+                });
+            }
+        })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --houston-pink: #f188f4;
+            --mumbai-magenta: #8e329c;
+            --hellerup-royal: #05275e;
+            --bath-sky: #4b81ef;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --scandinavia-rock: #485559;
+            --bergen-rain: #dadada;
+            --oslo-snow: #f8f8f8;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--trondheim-night);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background-layer.active {
+            opacity: 1;
+        }
+
+        .background-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.75) 100%);
+        }
+
+        #bg-welcome {
+            background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=95');
+        }
+
+        #bg-training {
+            background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=95');
+        }
+
+        #bg-quiz {
+            background-image: url('https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1920&q=90');
+        }
+
+        #bg-reference {
+            background-image: url('https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=1920&q=95');
+        }
+
+        .tab-navigation {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            animation: floatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .tab-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            opacity: 0;
+            transition: opacity 0.6s;
+            border-radius: 50px;
+            z-index: -1;
+        }
+
+        .tab-btn span { position: relative; z-index: 1; }
+        .tab-btn:hover { color: white; transform: scale(1.05); }
+        .tab-btn:hover::before { opacity: 0.4; }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 227, 169, 0.5);
+        }
+        .tab-btn.active::before { opacity: 1; }
+
+        .content-container {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem 2rem;
+            position: relative;
+        }
+
+        .tab-content {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 8rem;
+            left: 0; right: 0;
+            transition: opacity 1.2s, visibility 1.2s, transform 1.2s;
+            transform: translateY(40px);
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            top: 0;
+            transform: translateY(0);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            transition: all 0.8s;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 227, 169, 0.2);
+        }
+
+        .glass-hero {
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+        }
+
+        .glass-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--stockholm-neon), white, var(--bath-sky));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(60px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-hero .tagline {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--stockholm-neon);
+        }
+
+        .glass-hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.85;
+        }
+
+        .content-section { color: white; margin-bottom: 2rem; }
+        .content-section h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: white; }
+        .content-section h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--stockholm-neon); margin-top: 2rem; }
+        .content-section h4 { font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--bath-sky); margin-top: 1.5rem; }
+        .content-section p { font-size: 1.1rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; }
+        .content-section ul, .content-section ol { margin-left: 2rem; margin-bottom: 1.5rem; }
+        .content-section li { font-size: 1.05rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9); margin-bottom: 0.75rem; }
+        .content-section strong { color: var(--stockholm-neon); }
+
+        .info-box {
+            background: rgba(75, 129, 239, 0.15);
+            border-left: 4px solid var(--bath-sky);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .info-box h4 { color: var(--bath-sky); margin-bottom: 0.5rem; margin-top: 0; }
+
+        .success-box {
+            background: rgba(0, 227, 169, 0.15);
+            border-left: 4px solid var(--stockholm-neon);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .success-box h4 { color: var(--stockholm-neon); margin-bottom: 0.5rem; margin-top: 0; }
+
+        .warning-box {
+            background: rgba(249, 45, 99, 0.15);
+            border-left: 4px solid var(--orlando-red);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .warning-box h4 { color: var(--orlando-red); margin-bottom: 0.5rem; margin-top: 0; }
+
+        .technical-box {
+            background: rgba(142, 50, 156, 0.15);
+            border-left: 4px solid var(--mumbai-magenta);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .technical-box h4 { color: var(--mumbai-magenta); margin-bottom: 0.5rem; margin-top: 0; }
+
+        .mentor-box {
+            background: rgba(241, 136, 244, 0.15);
+            border-left: 4px solid var(--houston-pink);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .mentor-box h4 { color: var(--houston-pink); margin-bottom: 0.5rem; margin-top: 0; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+        }
+
+        .data-table th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 700;
+            color: white;
+        }
+
+        .data-table td {
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .data-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 227, 169, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .back-to-plan {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 9999;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            transform: translateX(-5px);
+        }
+
+        .quiz-container { max-width: 900px; margin: 0 auto; }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px);
+            border-radius: 25px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .answer-option {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .answer-option:hover {
+            background: rgba(0, 227, 169, 0.1);
+            border-color: var(--stockholm-neon);
+            transform: translateX(10px);
+        }
+
+        .answer-option.selected {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.3);
+        }
+
+        .progress-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            height: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50px;
+            transition: width 0.6s;
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.5);
+        }
+
+        .standard-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .standard-card.aas { border-color: rgba(0, 227, 169, 0.5); }
+        .standard-card.nas { border-color: rgba(75, 129, 239, 0.5); }
+        .standard-card.mas { border-color: rgba(249, 45, 99, 0.5); }
+
+        .standard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .standard-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .badge-aas { background: var(--stockholm-neon); color: #000; }
+        .badge-nas { background: var(--bath-sky); color: white; }
+        .badge-mas { background: var(--orlando-red); color: white; }
+
+        @media (max-width: 768px) {
+            .glass-hero h1 { font-size: 2.5rem; }
+            .glass-card { padding: 2rem; }
+            .content-section h2 { font-size: 2rem; }
+            .tab-btn { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="background-layer active" id="bg-welcome"></div>
+        <div class="background-layer" id="bg-training"></div>
+        <div class="background-layer" id="bg-quiz"></div>
+        <div class="background-layer" id="bg-reference"></div>
+    </div>
+
+    <div class="back-to-plan">
+        <button class="back-btn" onclick="window.location.href='training-plan.html'">
+            ← Back to Training Plan
+        </button>
+    </div>
+
+    <nav class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('welcome')" data-tab="welcome">
+            <span>Welcome</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('training')" data-tab="training">
+            <span>Training</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('quiz')" data-tab="quiz">
+            <span>Quiz</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('reference')" data-tab="reference">
+            <span>Reference</span>
+        </button>
+    </nav>
+
+    <div class="content-container">
+
+        <!-- WELCOME TAB -->
+        <div class="tab-content active" id="welcome-content">
+            <div class="glass-card glass-hero">
+                <h1>Access Standards & GPS Framework</h1>
+                <p class="tagline">Understanding Technical Performance Requirements</p>
+                <p class="subtitle">Entry Level | Schedule 5.2 Deep Dive | AEMO Assessment Guide</p>
+                <div style="margin-top: 3rem;">
+                    <button class="btn btn-primary" onclick="switchTab('training')">Start Learning</button>
+                    <button class="btn btn-secondary" onclick="switchTab('reference')">Quick Reference</button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Module Overview</h2>
+                    <p>
+                        This module builds on your understanding of NER Chapter 5 to explore the technical heart of grid connections:
+                        Access Standards and the Generator Performance Standards (GPS) framework. You'll learn what AEMO and NSPs
+                        are actually looking for when they assess a connection application.
+                    </p>
+                    <p>
+                        By the end of this module, you'll be able to read a GPS template and understand what each requirement means,
+                        why it matters, and what kind of evidence is needed to demonstrate compliance.
+                    </p>
+
+                    <div class="mentor-box">
+                        <h4>From Your Lead Engineer</h4>
+                        <p>
+                            "This is where the rubber meets the road. Understanding access standards is what separates engineers who
+                            can fill out forms from engineers who can actually solve connection challenges. When a client asks 'why is
+                            our GPS taking so long?', 99% of the time it's because of negotiated access standards. If you understand
+                            this module, you'll understand why some projects sail through and others get stuck in months of RFIs."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand the structure and purpose of Schedule 5.2 access standards</li>
+                        <li>Explain the difference between Automatic, Negotiated, and Minimum Access Standards</li>
+                        <li>Navigate the AEMO GPS template and identify key technical requirements</li>
+                        <li>Understand what technical evidence is required for each GPS clause</li>
+                        <li>Know when negotiation is likely required and what justification is needed</li>
+                        <li>Understand the role of simulation models (PSS/E and PSCAD) in GPS assessment</li>
+                        <li>Identify common pitfalls that cause GPS submissions to fail or be delayed</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h3>Module Details</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">60-90</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Minutes</div>
+                            <div style="opacity: 0.8;">Estimated Duration</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">12</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Questions</div>
+                            <div style="opacity: 0.8;">Knowledge Check</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">600</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Points</div>
+                            <div style="opacity: 0.8;">Maximum Score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h3>Prerequisites</h3>
+                    <ul>
+                        <li>Completed "NER Chapter 5 Introduction" module</li>
+                        <li>Basic understanding of power systems concepts</li>
+                        <li>Familiarity with grid connection terminology</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING TAB -->
+        <div class="tab-content" id="training-content">
+            <div class="glass-card glass-hero">
+                <h1>Access Standards Deep Dive</h1>
+                <p class="tagline">The Technical Requirements That Matter</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 1: The Three Levels of Access Standards</h2>
+
+                    <p>
+                        Every technical requirement in Schedule 5.2 has three levels of performance that can be agreed. Understanding
+                        these levels is fundamental to GPS work.
+                    </p>
+
+                    <div class="standard-card aas">
+                        <div class="standard-header">
+                            <h4 style="color: var(--stockholm-neon); margin: 0;">Automatic Access Standard (AAS)</h4>
+                            <span class="standard-badge badge-aas">TARGET</span>
+                        </div>
+                        <p>
+                            The "gold standard" - if you can demonstrate compliance with the AAS, AEMO must accept it without negotiation.
+                            This is what we aim for wherever possible because it simplifies and speeds up the assessment process.
+                        </p>
+                        <ul>
+                            <li><strong>Advantage:</strong> No negotiation required - automatic acceptance</li>
+                            <li><strong>Requirement:</strong> Must provide evidence demonstrating compliance</li>
+                            <li><strong>Reality:</strong> Modern equipment can usually achieve AAS for most clauses</li>
+                        </ul>
+                    </div>
+
+                    <div class="standard-card nas">
+                        <div class="standard-header">
+                            <h4 style="color: var(--bath-sky); margin: 0;">Negotiated Access Standard (NAS)</h4>
+                            <span class="standard-badge badge-nas">NEGOTIATE</span>
+                        </div>
+                        <p>
+                            When AAS cannot be achieved, a generator can propose a Negotiated Access Standard. This requires
+                            justification and agreement from AEMO and the NSP.
+                        </p>
+                        <ul>
+                            <li><strong>Requirement:</strong> Must be "as close as practicable" to AAS</li>
+                            <li><strong>Justification:</strong> Technical reasons why AAS cannot be achieved</li>
+                            <li><strong>Assessment:</strong> AEMO considers impact on system security and other generators</li>
+                            <li><strong>Timeline:</strong> Adds time to the GPS process due to negotiation</li>
+                        </ul>
+                    </div>
+
+                    <div class="standard-card mas">
+                        <div class="standard-header">
+                            <h4 style="color: var(--orlando-red); margin: 0;">Minimum Access Standard (MAS)</h4>
+                            <span class="standard-badge badge-mas">FLOOR</span>
+                        </div>
+                        <p>
+                            The absolute floor - you cannot connect if your performance is below this level. The MAS exists to
+                            protect the power system from generators that would cause unacceptable impact.
+                        </p>
+                        <ul>
+                            <li><strong>Critical Rule:</strong> Cannot connect if below MAS</li>
+                            <li><strong>Purpose:</strong> Protects system security and reliability</li>
+                            <li><strong>Reality:</strong> Very rare for modern equipment to not meet MAS</li>
+                        </ul>
+                    </div>
+
+                    <div class="mentor-box">
+                        <h4>Practical Reality</h4>
+                        <p>
+                            "Here's what years of experience have taught me: aiming for AAS everywhere isn't always the smartest
+                            approach. In weak networks with low Short Circuit Ratio (SCR), some AAS values - like the 40ms reactive
+                            current rise time in S5.2.5.5 - can actually cause instability. A well-justified NAS that ensures stable
+                            operation is better than an AAS that causes problems. The key is understanding WHY each standard exists."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 2: Key Schedule 5.2.5 Requirements Explained</h2>
+
+                    <p>
+                        Let's walk through the most important technical requirements you'll encounter. For each one, we'll explain
+                        what it means, why it matters, and what evidence is typically needed.
+                    </p>
+
+                    <h3>S5.2.5.1 - Reactive Power Capability</h3>
+
+                    <p>
+                        This clause defines how much reactive power (Q) the generator must be able to supply to or absorb from
+                        the network. Reactive power is essential for voltage control.
+                    </p>
+
+                    <div class="technical-box">
+                        <h4>What the AAS Requires</h4>
+                        <p>
+                            The generating system must be capable of supplying and absorbing reactive power of at least
+                            <strong>0.395 times its rated active power</strong> at any voltage level at the connection point
+                            within ±10% of nominal, across its entire active power output range.
+                        </p>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>In Plain English:</strong> A 100MW generator must be able to provide or absorb at least
+                            39.5 MVAr of reactive power at any power output level.
+                        </p>
+                    </div>
+
+                    <h4>What Evidence is Needed:</h4>
+                    <ul>
+                        <li><strong>P-Q Capability Curve:</strong> Shows reactive power capability across all operating points</li>
+                        <li><strong>Inverter/Generator Specifications:</strong> Manufacturer data confirming capability</li>
+                        <li><strong>Simulation Results:</strong> PSS/E or PSCAD tests at voltage corner points (0.9, 1.0, 1.1 pu)</li>
+                        <li><strong>Limiter Settings:</strong> Documentation of any control limiters that may constrain Q output</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>Why This Matters</h4>
+                        <p>
+                            Reactive power is critical for voltage regulation. Without adequate reactive capability, the generator
+                            cannot support network voltage during high or low demand periods. This is particularly important in
+                            remote areas where the network is "weak" and voltage can swing significantly.
+                        </p>
+                    </div>
+
+                    <h3>S5.2.5.5 - Fault Ride-Through (Contingency Response)</h3>
+
+                    <p>
+                        This is often the most complex and scrutinized clause. It defines how the generator must respond to
+                        network faults (short circuits) and disturbances.
+                    </p>
+
+                    <div class="technical-box">
+                        <h4>Key Requirements</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Continuous Uninterrupted Operation:</strong> Must stay connected during faults within defined voltage/time envelopes</li>
+                            <li><strong>Reactive Current Injection:</strong> Must inject reactive current to support voltage during faults
+                                (AAS: at least 4% of max current for each 1% voltage drop)</li>
+                            <li><strong>Active Power Recovery:</strong> Must recover active power within specified time after fault clears
+                                (AAS: 100ms for full recovery)</li>
+                            <li><strong>Multiple Fault Ride-Through:</strong> Must handle multiple sequential faults</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>Common Negotiation Trigger</h4>
+                        <p>
+                            The 100ms active power recovery time and 4% reactive current gain can be problematic in weak networks.
+                            Large generating systems in low SCR conditions may need longer recovery times or adjusted reactive
+                            current gains to maintain stability. This is one of the most common areas requiring NAS.
+                        </p>
+                    </div>
+
+                    <h4>Evidence Requirements:</h4>
+                    <ul>
+                        <li><strong>PSCAD EMT Studies:</strong> Time-domain simulation of fault response (critical)</li>
+                        <li><strong>Fault Ride-Through Curves:</strong> Voltage vs time envelopes showing ride-through capability</li>
+                        <li><strong>Reactive Current Injection Profile:</strong> Demonstration of Iq injection during faults</li>
+                        <li><strong>Recovery Characteristics:</strong> Active power recovery trajectories post-fault</li>
+                    </ul>
+
+                    <h3>S5.2.5.11 - Frequency Control (Primary Frequency Response)</h3>
+
+                    <p>
+                        Since the introduction of Mandatory Primary Frequency Response (MPFR), this clause has become increasingly
+                        important. It requires generators to automatically adjust output in response to frequency deviations.
+                    </p>
+
+                    <div class="technical-box">
+                        <h4>Key Requirements</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Deadband:</strong> ±15 mHz (no response required within this band)</li>
+                            <li><strong>Droop Response:</strong> P(f) droop curve defining power response to frequency</li>
+                            <li><strong>Response Time:</strong> Must respond within specified timeframes</li>
+                            <li><strong>Sustained Response:</strong> Must maintain response for duration of frequency event</li>
+                        </ul>
+                    </div>
+
+                    <h4>Evidence Requirements:</h4>
+                    <ul>
+                        <li><strong>P(f) Droop Curve:</strong> Documented frequency response characteristic</li>
+                        <li><strong>Playback Testing:</strong> Simulation of plant response to frequency events</li>
+                        <li><strong>Controller Settings:</strong> PPC settings for frequency response</li>
+                    </ul>
+
+                    <h3>S5.2.5.13 - Voltage Control</h3>
+
+                    <p>
+                        Defines how the generator controls voltage at the connection point through reactive power adjustment.
+                    </p>
+
+                    <div class="technical-box">
+                        <h4>Key Requirements</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Control Mode:</strong> Typically voltage droop control (Q(V) characteristic)</li>
+                            <li><strong>Setpoint Response:</strong> Must respond to voltage setpoint changes</li>
+                            <li><strong>Settling Time:</strong> Response must settle within specified time</li>
+                            <li><strong>Limiter Behaviour:</strong> Response when reaching reactive power limits</li>
+                        </ul>
+                    </div>
+
+                    <h4>Evidence Requirements:</h4>
+                    <ul>
+                        <li><strong>Q(V) Droop Curves:</strong> Voltage-reactive power characteristic</li>
+                        <li><strong>Step Response Tests:</strong> Simulation of setpoint changes</li>
+                        <li><strong>5% Voltage Disturbance Tests:</strong> Response to network voltage changes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 3: The AEMO GPS Template</h2>
+
+                    <p>
+                        The GPS Template is the official document where performance standards are proposed and recorded. Understanding
+                        its structure is essential for anyone working on connection projects.
+                    </p>
+
+                    <h3>Template Structure Overview</h3>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Section</th>
+                                <th>Contents</th>
+                                <th>Your Responsibility</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Project Information</td>
+                                <td>Site details, capacity, technology</td>
+                                <td>Complete all project particulars</td>
+                            </tr>
+                            <tr>
+                                <td>Connection Details</td>
+                                <td>Connection point, voltage, NSP</td>
+                                <td>Confirm with NSP</td>
+                            </tr>
+                            <tr>
+                                <td>Equipment Schedule</td>
+                                <td>Inverters, transformers, etc.</td>
+                                <td>Detailed specifications required</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.x Tables</td>
+                                <td>Each technical requirement</td>
+                                <td>Mark A or N, provide values and evidence</td>
+                            </tr>
+                            <tr>
+                                <td>Supporting Studies</td>
+                                <td>References to technical reports</td>
+                                <td>List all attached studies</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Completing the Standard Tables</h3>
+
+                    <p>For each S5.2.5 clause, the template requires you to complete columns indicating:</p>
+
+                    <ul>
+                        <li><strong>Column 4 (A/N):</strong> Are you proposing Automatic (A) or Negotiated (N)?</li>
+                        <li><strong>Column 5 (Proposed Value):</strong> The specific value or performance you're proposing</li>
+                        <li><strong>Column 6 (Evidence):</strong> Reference to supporting documentation</li>
+                        <li><strong>Column 7 (Justification):</strong> If N, why can't AAS be achieved?</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>Example Entry</h4>
+                        <p>
+                            <strong>Clause:</strong> S5.2.5.1 Reactive Power Capability<br>
+                            <strong>A/N:</strong> A<br>
+                            <strong>Proposed:</strong> ±0.395 pu at all operating points<br>
+                            <strong>Evidence:</strong> "Refer to Section 4.2 of GPS Technical Report, P-Q Capability Curves"<br>
+                        </p>
+                    </div>
+
+                    <div class="mentor-box">
+                        <h4>Pro Tips for GPS Template</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Be specific with your proposed values - "meets AAS" is not acceptable</li>
+                            <li>Cross-reference evidence clearly - AEMO will look up every reference</li>
+                            <li>If proposing NAS, provide detailed technical justification upfront</li>
+                            <li>Use consistent terminology throughout - match the NER wording exactly</li>
+                            <li>Keep a version control log - GPS templates often go through multiple revisions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 4: Simulation Models - The Evidence Engine</h2>
+
+                    <p>
+                        Simulation models are critical evidence for GPS compliance. AEMO and NSPs use these models to verify
+                        your claimed performance and to assess system-wide impacts.
+                    </p>
+
+                    <h3>Two Types of Models Required</h3>
+
+                    <div class="standard-card">
+                        <h4 style="color: var(--bath-sky);">PSS/E Models (RMS - Root Mean Square)</h4>
+                        <p>
+                            PSS/E is an RMS (phasor) simulation tool used for:
+                        </p>
+                        <ul>
+                            <li>Steady-state load flow analysis</li>
+                            <li>Dynamic stability studies (seconds-to-minutes timescale)</li>
+                            <li>Contingency analysis</li>
+                            <li>Large-scale system studies</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Accuracy:</strong> Good for slower dynamics, not suitable for fast transients
+                        </p>
+                    </div>
+
+                    <div class="standard-card">
+                        <h4 style="color: var(--stockholm-neon);">PSCAD Models (EMT - Electromagnetic Transient)</h4>
+                        <p>
+                            PSCAD is an EMT simulation tool that captures fast electromagnetic dynamics:
+                        </p>
+                        <ul>
+                            <li>Fault ride-through behaviour (milliseconds timescale)</li>
+                            <li>Inverter switching dynamics</li>
+                            <li>Control system response</li>
+                            <li>High-frequency harmonics</li>
+                            <li>Weak grid interactions</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Accuracy:</strong> Essential for inverter-based generation - PSS/E alone is not sufficient
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>Model Validation is Critical</h4>
+                        <p>
+                            AEMO's Dynamic Model Acceptance Test Guideline (DMAG) specifies over 400 simulation tests that models
+                            must pass before being accepted. Models must demonstrate ±10% accuracy against specified test cases.
+                            Poor-quality models are a major cause of GPS delays.
+                        </p>
+                    </div>
+
+                    <h3>AEMO's Connection Simulation Tool (CST)</h3>
+
+                    <p>
+                        AEMO provides access to their large-scale EMT power system model through the Connection Simulation Tool.
+                        This allows applicants to test their plant against realistic network conditions rather than simplified
+                        Single Machine Infinite Bus (SMIB) models.
+                    </p>
+
+                    <div class="success-box">
+                        <h4>Best Practice</h4>
+                        <p>
+                            "Confirm model compatibility with AEMO before submitting your application. A completed Connection
+                            Application Submission Review Checklist should accompany your submission. Nothing delays a project
+                            more than discovering model issues after formal submission."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 5: The Assessment Process - What to Expect</h2>
+
+                    <p>
+                        Understanding how AEMO and NSPs assess GPS submissions helps you prepare better documentation
+                        and anticipate potential issues.
+                    </p>
+
+                    <h3>AEMO Assessment Approach</h3>
+
+                    <ol>
+                        <li><strong>Completeness Check:</strong> Are all required documents and information provided?</li>
+                        <li><strong>Technical Review:</strong> Do proposed standards meet requirements? Is evidence adequate?</li>
+                        <li><strong>Model Validation:</strong> Do simulation models meet DMAG requirements?</li>
+                        <li><strong>System Impact Assessment:</strong> Will the generator adversely affect system security?</li>
+                        <li><strong>NAS Evaluation:</strong> For negotiated standards - is justification acceptable?</li>
+                    </ol>
+
+                    <h3>The RFI Process</h3>
+
+                    <p>
+                        Request for Information (RFI) is AEMO's formal process for seeking clarification or additional evidence.
+                        Multiple RFI rounds are common.
+                    </p>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>RFI Type</th>
+                                <th>Common Causes</th>
+                                <th>How to Avoid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Missing Information</td>
+                                <td>Incomplete template, missing studies</td>
+                                <td>Use AEMO checklist before submission</td>
+                            </tr>
+                            <tr>
+                                <td>Unclear Evidence</td>
+                                <td>Vague references, unclear methodology</td>
+                                <td>Be specific, include methodology details</td>
+                            </tr>
+                            <tr>
+                                <td>Technical Concerns</td>
+                                <td>Performance doesn't meet requirements</td>
+                                <td>Thorough internal review before submission</td>
+                            </tr>
+                            <tr>
+                                <td>Model Issues</td>
+                                <td>Models fail validation tests</td>
+                                <td>Pre-validate with OEM and AEMO</td>
+                            </tr>
+                            <tr>
+                                <td>NAS Justification</td>
+                                <td>Insufficient justification for negotiated</td>
+                                <td>Provide detailed technical reasoning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mentor-box">
+                        <h4>Managing Expectations</h4>
+                        <p>
+                            "I tell every client: plan for 2-4 RFI rounds. Even well-prepared submissions typically have at least
+                            one round of clarifications. The goal isn't zero RFIs - it's ensuring each RFI response fully addresses
+                            AEMO's concerns so you don't get the same question twice. Build 4-6 months into your schedule for the
+                            GPS assessment process."
+                        </p>
+                    </div>
+
+                    <h3>Timeline Expectations</h3>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>NER Timeframe</th>
+                                <th>Practical Reality</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Initial AEMO Review</td>
+                                <td>20-30 business days</td>
+                                <td>Usually met</td>
+                            </tr>
+                            <tr>
+                                <td>RFI Response</td>
+                                <td>15-20 business days</td>
+                                <td>Depends on complexity</td>
+                            </tr>
+                            <tr>
+                                <td>Follow-up Review</td>
+                                <td>10-15 business days</td>
+                                <td>Per RFI round</td>
+                            </tr>
+                            <tr>
+                                <td>Total GPS Process</td>
+                                <td>Mandated timeframes exist but...</td>
+                                <td>3-6 months typical, 6-9 for complex</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 6: Common Pitfalls and How to Avoid Them</h2>
+
+                    <div class="warning-box">
+                        <h4>Pitfall 1: Using Generic Equipment Data</h4>
+                        <p>
+                            <strong>Problem:</strong> Using default or generic inverter parameters instead of project-specific data<br>
+                            <strong>Result:</strong> Studies don't reflect actual plant behaviour, leading to RFIs or failed commissioning<br>
+                            <strong>Solution:</strong> Obtain project-specific parameters from equipment supplier early
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>Pitfall 2: Underestimating Weak Grid Effects</h4>
+                        <p>
+                            <strong>Problem:</strong> Studies performed at high SCR that don't reflect actual weak network<br>
+                            <strong>Result:</strong> Plant unstable when commissioned, performance standards not achievable<br>
+                            <strong>Solution:</strong> Always study at minimum expected SCR conditions
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>Pitfall 3: Late Model Development</h4>
+                        <p>
+                            <strong>Problem:</strong> Starting model development after connection application<br>
+                            <strong>Result:</strong> Delays while waiting for validated models<br>
+                            <strong>Solution:</strong> Engage OEM for models as early as equipment selection
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>Pitfall 4: Assuming AAS is Always Achievable</h4>
+                        <p>
+                            <strong>Problem:</strong> Proposing AAS without verifying through studies<br>
+                            <strong>Result:</strong> Need to revise to NAS mid-process, re-do studies<br>
+                            <strong>Solution:</strong> Perform preliminary studies before committing to AAS
+                        </p>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>Keys to GPS Success</h4>
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Start early - GPS preparation takes longer than you expect</li>
+                            <li>Engage AEMO early for complex projects - they can flag concerns</li>
+                            <li>Use project-specific data throughout</li>
+                            <li>Validate models before submission</li>
+                            <li>Be thorough in initial submission - quality over speed</li>
+                            <li>Respond to RFIs completely - don't leave questions unanswered</li>
+                            <li>Document everything - methodology, assumptions, limitations</li>
+                        </ol>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn btn-primary" onclick="switchTab('quiz')">Test Your Knowledge →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ TAB -->
+        <div class="tab-content" id="quiz-content">
+            <div class="glass-card glass-hero">
+                <h1>Knowledge Check</h1>
+                <p class="tagline">Test Your Understanding of Access Standards</p>
+                <div class="progress-glass">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;">Question <span id="current-q">1</span> of 12</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="glass-card quiz-card" id="quiz-area">
+                    <div class="question-text" id="question-text">Loading question...</div>
+                    <div id="answers-area"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" id="prev-btn" disabled>← Previous</button>
+                        <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn">Next →</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="text-align: center; display: none;" id="results-card">
+                    <h2 style="font-size: 3rem; margin-bottom: 1rem;">Quiz Complete!</h2>
+                    <div style="font-size: 4rem; margin: 2rem 0; color: var(--stockholm-neon);" id="final-score">0%</div>
+                    <h3 style="margin-bottom: 2rem;" id="result-message">Result</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;" id="result-detail">Score details</p>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+                        <button class="btn btn-primary" onclick="window.location.href='training-plan.html'">Back to Training Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENCE TAB -->
+        <div class="tab-content" id="reference-content">
+            <div class="glass-card glass-hero">
+                <h1>Quick Reference</h1>
+                <p class="tagline">Access Standards at a Glance</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Access Standards Summary</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Standard</th>
+                                <th>Abbreviation</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Automatic Access Standard</td>
+                                <td>AAS</td>
+                                <td>Target performance - automatically accepted</td>
+                                <td>Aim for this</td>
+                            </tr>
+                            <tr>
+                                <td>Negotiated Access Standard</td>
+                                <td>NAS</td>
+                                <td>Between AAS and MAS - requires justification</td>
+                                <td>Justify thoroughly</td>
+                            </tr>
+                            <tr>
+                                <td>Minimum Access Standard</td>
+                                <td>MAS</td>
+                                <td>Floor - cannot connect if below</td>
+                                <td>Never go below</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>Key S5.2.5 Clauses</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Clause</th>
+                                <th>Topic</th>
+                                <th>AAS Highlight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S5.2.5.1</td>
+                                <td>Reactive Power Capability</td>
+                                <td>±0.395 pu at rated power</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.3</td>
+                                <td>Frequency Response</td>
+                                <td>Continuous operation 47-52 Hz</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.4</td>
+                                <td>Voltage Response</td>
+                                <td>Continuous operation across voltage bands</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.5</td>
+                                <td>Fault Ride-Through</td>
+                                <td>4% Iq gain, 100ms P recovery</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.11</td>
+                                <td>Frequency Control</td>
+                                <td>±15 mHz deadband, P(f) droop</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.13</td>
+                                <td>Voltage Control</td>
+                                <td>Q(V) droop, setpoint response</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>GPS Template Checklist</h2>
+                    <ul>
+                        <li>☐ All project information completed</li>
+                        <li>☐ Connection details confirmed with NSP</li>
+                        <li>☐ Equipment specifications provided</li>
+                        <li>☐ All S5.2.5.x tables completed (A/N marked)</li>
+                        <li>☐ Values specified for all standards</li>
+                        <li>☐ Evidence referenced for each clause</li>
+                        <li>☐ NAS justifications provided where applicable</li>
+                        <li>☐ PSS/E model attached and validated</li>
+                        <li>☐ PSCAD model attached and validated</li>
+                        <li>☐ Technical studies report attached</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>Model Requirements Summary</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Model Type</th>
+                                <th>Tool</th>
+                                <th>Primary Use</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RMS (Phasor)</td>
+                                <td>PSS/E, DIgSILENT</td>
+                                <td>Steady-state, dynamic stability</td>
+                            </tr>
+                            <tr>
+                                <td>EMT</td>
+                                <td>PSCAD</td>
+                                <td>Fault ride-through, fast transients</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 1rem;">
+                        <strong>Accuracy Requirement:</strong> ±10% against DMAG test cases<br>
+                        <strong>Test Cases:</strong> 400+ for PSCAD, varies for PSS/E
+                    </p>
+                </div>
+
+                <div class="content-section">
+                    <h2>Common NAS Triggers</h2>
+                    <ul>
+                        <li><strong>S5.2.5.5:</strong> Active power recovery time in weak networks</li>
+                        <li><strong>S5.2.5.5:</strong> Reactive current injection gain in low SCR</li>
+                        <li><strong>S5.2.5.5:</strong> Settling time for stability</li>
+                        <li><strong>S5.2.5.13:</strong> Voltage control response time</li>
+                        <li><strong>S5.2.5.1:</strong> Reactive capability at extreme temperatures</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>Key Resources</h2>
+                    <ul>
+                        <li><strong>GPS Template:</strong> aemo.com.au/network-connections</li>
+                        <li><strong>Access Standard Assessment Guide:</strong> AEMO website (2019)</li>
+                        <li><strong>Power System Model Guidelines:</strong> AEMO (Version 2, 2023)</li>
+                        <li><strong>Dynamic Model Acceptance Test Guideline:</strong> AEMO DMAG</li>
+                        <li><strong>Connection Application Checklist:</strong> AEMO website</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What does 'AAS' stand for in the context of access standards?",
+                answers: ["Australian Access Standard", "Automatic Access Standard", "Alternative Access Standard", "Approved Access Standard"],
+                correct: 1
+            },
+            {
+                question: "What is the reactive power capability requirement under the AAS for S5.2.5.1?",
+                answers: ["±0.2 pu of rated power", "±0.395 pu of rated power", "±0.5 pu of rated power", "±0.1 pu of rated power"],
+                correct: 1
+            },
+            {
+                question: "Which type of simulation model is essential for demonstrating fault ride-through compliance?",
+                answers: ["PSS/E only", "Load flow model", "PSCAD (EMT)", "Spreadsheet calculations"],
+                correct: 2
+            },
+            {
+                question: "What does the AAS for S5.2.5.5 require for reactive current injection during faults?",
+                answers: ["2% per 1% voltage drop", "4% per 1% voltage drop", "10% per 1% voltage drop", "No injection required"],
+                correct: 1
+            },
+            {
+                question: "When proposing a Negotiated Access Standard (NAS), what must the applicant demonstrate?",
+                answers: ["That they tried hard to meet AAS", "That the NAS is as close as practicable to AAS with technical justification", "That the MAS is too difficult", "Nothing specific is required"],
+                correct: 1
+            },
+            {
+                question: "What is the frequency deadband specified in S5.2.5.11 for primary frequency response?",
+                answers: ["±5 mHz", "±15 mHz", "±50 mHz", "±100 mHz"],
+                correct: 1
+            },
+            {
+                question: "What is the AAS active power recovery time requirement after a fault in S5.2.5.5?",
+                answers: ["50 ms", "100 ms", "200 ms", "1 second"],
+                correct: 1
+            },
+            {
+                question: "In the GPS template, what does Column 4 indicate?",
+                answers: ["The evidence reference", "Whether you're proposing A (Automatic) or N (Negotiated)", "The NER clause number", "The equipment manufacturer"],
+                correct: 1
+            },
+            {
+                question: "What accuracy must simulation models demonstrate against AEMO test cases?",
+                answers: ["±5%", "±10%", "±20%", "±50%"],
+                correct: 1
+            },
+            {
+                question: "Which situation commonly triggers the need for a Negotiated Access Standard?",
+                answers: ["High SCR network conditions", "Large generating systems in low SCR conditions", "All solar projects", "Projects over 100MW"],
+                correct: 1
+            },
+            {
+                question: "What tool does AEMO provide for testing plant models against realistic network conditions?",
+                answers: ["SMIB Simulator", "Connection Simulation Tool (CST)", "Model Checker", "NEM Validator"],
+                correct: 1
+            },
+            {
+                question: "What is a common pitfall that causes GPS delays?",
+                answers: ["Submitting too early", "Using project-specific equipment data", "Using generic equipment parameters instead of project-specific data", "Completing too many studies"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswers = new Array(quizData.length).fill(null);
+
+        function initQuiz() {
+            loadQuestion();
+            updateProgress();
+        }
+
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('question-text').textContent = q.question;
+
+            const answersArea = document.getElementById('answers-area');
+            answersArea.innerHTML = '';
+
+            q.answers.forEach((answer, index) => {
+                const div = document.createElement('div');
+                div.className = 'answer-option';
+                if (selectedAnswers[currentQuestion] === index) {
+                    div.classList.add('selected');
+                }
+                div.textContent = answer;
+                div.onclick = () => selectAnswer(index);
+                answersArea.appendChild(div);
+            });
+
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent =
+                currentQuestion === quizData.length - 1 ? 'Finish Quiz →' : 'Next →';
+        }
+
+        function selectAnswer(index) {
+            selectedAnswers[currentQuestion] = index;
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+        }
+
+        function showResults() {
+            let correct = 0;
+            quizData.forEach((q, index) => {
+                if (selectedAnswers[index] === q.correct) correct++;
+            });
+
+            const percentage = Math.round((correct / quizData.length) * 100);
+            const points = Math.round((correct / quizData.length) * 600);
+
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('results-card').style.display = 'block';
+            document.getElementById('final-score').textContent = percentage + '%';
+            document.getElementById('result-detail').textContent =
+                `You scored ${correct} out of ${quizData.length} questions correctly (${points} points)`;
+
+            if (percentage >= 90) {
+                document.getElementById('result-message').textContent = 'Outstanding! Expert Level!';
+            } else if (percentage >= 70) {
+                document.getElementById('result-message').textContent = 'Well Done! You Passed!';
+            } else {
+                document.getElementById('result-message').textContent = 'Keep Learning - Review the material';
+            }
+        }
+
+        function retakeQuiz() {
+            currentQuestion = 0;
+            selectedAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('quiz-area').style.display = 'block';
+            initQuiz();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            const content = document.getElementById(tabName + '-content');
+            const btn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (content) content.classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            changeBackground(tabName);
+        }
+
+        function changeBackground(tabName) {
+            document.querySelectorAll('.background-layer').forEach(bg => bg.classList.remove('active'));
+            const activeBg = document.getElementById('bg-' + tabName);
+            if (activeBg) activeBg.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            changeBackground('welcome');
+            initQuiz();
+        });
+    </script>
+</body>
+</html>

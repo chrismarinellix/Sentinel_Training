@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vysus Training Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--malmo-green) 0%, var(--trondheim-night) 50%, var(--barcelona-dusk) 100%);
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=90') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(60px) saturate(180%);
+            -webkit-backdrop-filter: blur(60px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            padding: 3rem 2.5rem;
+            animation: floatIn 0.8s ease;
+        }
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .logo { text-align: center; margin-bottom: 2rem; }
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--white));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .logo p { color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--stockholm-neon);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.2);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 1rem;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 227, 169, 0.4); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .links { text-align: center; margin-top: 1.5rem; }
+        .links a { color: var(--stockholm-neon); text-decoration: none; font-size: 0.9rem; }
+        .links a:hover { color: var(--white); }
+        .divider { color: rgba(255, 255, 255, 0.4); margin: 0 0.8rem; }
+        .message {
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .message.error { background: rgba(249, 45, 99, 0.2); border: 1px solid var(--orlando-red); color: var(--orlando-red); }
+        .message.success { background: rgba(0, 227, 169, 0.2); border: 1px solid var(--stockholm-neon); color: var(--stockholm-neon); }
+        .message.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="glass-card">
+            <div class="logo">
+                <h1>Vysus Training</h1>
+                <p>Grid Connection Engineering</p>
+            </div>
+            <div id="error-message" class="message error"></div>
+            <div id="success-message" class="message success"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="name@vysusgroup.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="submit-btn" id="submit-btn">Sign In</button>
+            </form>
+            <div class="links">
+                <a href="/forgot-password">Forgot password?</a>
+                <span class="divider">|</span>
+                <a href="/register">Create account</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value
+                    }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.classList.add('show');
+                    setTimeout(() => { window.location.href = '/'; }, 1000);
+                } else {
+                    errorMessage.textContent = data.detail || 'Invalid email or password';
+                    errorMessage.classList.add('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Sign In';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.classList.add('show');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

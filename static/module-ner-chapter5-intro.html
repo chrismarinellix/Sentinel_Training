@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NER Chapter 5 Introduction | Grid Engineering Training</title>
+    <script>
+        // Draft expiry - locks after 10 days from creation
+        (function() {
+            const CREATED_DATE = new Date('2025-01-26');
+            const EXPIRY_DAYS = 10;
+            const now = new Date();
+            const diffTime = now - CREATED_DATE;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays >= EXPIRY_DAYS) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1d1d1b;color:white;font-family:sans-serif;text-align:center;padding:2rem;"><div><h1 style="color:#f92d63;font-size:3rem;margin-bottom:1rem;">Draft Expired</h1><p style="font-size:1.2rem;opacity:0.8;">This draft module expired on ' + new Date(CREATED_DATE.getTime() + EXPIRY_DAYS * 24 * 60 * 60 * 1000).toLocaleDateString() + '</p><p style="margin-top:1rem;opacity:0.6;">Contact the training team for the current version.</p><button onclick="window.location.href=\'training-plan.html\'" style="margin-top:2rem;padding:1rem 2rem;background:#00E3A9;border:none;border-radius:50px;color:#000;font-weight:bold;cursor:pointer;">Back to Training Plan</button></div></div>';
+                });
+            }
+        })();
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Vysus Brand Colors */
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --houston-pink: #f188f4;
+            --mumbai-magenta: #8e329c;
+            --hellerup-royal: #05275e;
+            --bath-sky: #4b81ef;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --scandinavia-rock: #485559;
+            --bergen-rain: #dadada;
+            --oslo-snow: #f8f8f8;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--trondheim-night);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background System */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background-layer.active {
+            opacity: 1;
+        }
+
+        .background-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.75) 100%);
+        }
+
+        #bg-welcome {
+            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=95');
+        }
+
+        #bg-training {
+            background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=95');
+        }
+
+        #bg-quiz {
+            background-image: url('https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1920&q=90');
+        }
+
+        #bg-reference {
+            background-image: url('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1920&q=95');
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            animation: floatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .tab-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50px;
+            z-index: -1;
+        }
+
+        .tab-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-btn:hover::before {
+            opacity: 0.4;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 227, 169, 0.5);
+        }
+
+        .tab-btn.active::before {
+            opacity: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem 2rem;
+            position: relative;
+        }
+
+        .tab-content {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 8rem;
+            left: 0;
+            right: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(40px);
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            top: 0;
+            transform: translateY(0);
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 227, 169, 0.2);
+        }
+
+        .glass-hero {
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+        }
+
+        .glass-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--stockholm-neon), white, var(--bath-sky));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-hero .tagline {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+            color: var(--stockholm-neon);
+        }
+
+        .glass-hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.85;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Content Sections */
+        .content-section {
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .content-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--stockholm-neon);
+            margin-top: 2rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: var(--bath-sky);
+            margin-top: 1.5rem;
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+        }
+
+        .content-section strong {
+            color: var(--stockholm-neon);
+        }
+
+        /* Process Flow */
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .process-step {
+            background: rgba(0, 227, 169, 0.1);
+            border: 2px solid rgba(0, 227, 169, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--stockholm-neon);
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50%;
+            line-height: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .step-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: rgba(75, 129, 239, 0.15);
+            border-left: 4px solid var(--bath-sky);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: var(--bath-sky);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: rgba(0, 227, 169, 0.15);
+            border-left: 4px solid var(--stockholm-neon);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .success-box h4 {
+            color: var(--stockholm-neon);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: rgba(249, 45, 99, 0.15);
+            border-left: 4px solid var(--orlando-red);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: var(--orlando-red);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .technical-box {
+            background: rgba(142, 50, 156, 0.15);
+            border-left: 4px solid var(--mumbai-magenta);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .technical-box h4 {
+            color: var(--mumbai-magenta);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .mentor-box {
+            background: rgba(241, 136, 244, 0.15);
+            border-left: 4px solid var(--houston-pink);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .mentor-box h4 {
+            color: var(--houston-pink);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+        }
+
+        .data-table th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 700;
+            color: white;
+        }
+
+        .data-table td {
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .data-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 227, 169, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Back Button */
+        .back-to-plan {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 9999;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            transform: translateX(-5px);
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px);
+            border-radius: 25px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .answer-option {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .answer-option:hover {
+            background: rgba(0, 227, 169, 0.1);
+            border-color: var(--stockholm-neon);
+            transform: translateX(10px);
+        }
+
+        .answer-option.selected {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.3);
+        }
+
+        .answer-option.correct {
+            background: rgba(0, 227, 169, 0.3);
+            border-color: var(--stockholm-neon);
+        }
+
+        .answer-option.incorrect {
+            background: rgba(249, 45, 99, 0.2);
+            border-color: var(--orlando-red);
+        }
+
+        .progress-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            height: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.5);
+        }
+
+        /* Comparison Table */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .comparison-card h4 {
+            color: var(--stockholm-neon);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .comparison-card.chapter5 {
+            border-color: rgba(0, 227, 169, 0.4);
+        }
+
+        .comparison-card.chapter5a {
+            border-color: rgba(75, 129, 239, 0.4);
+        }
+
+        .comparison-card.chapter5a h4 {
+            color: var(--bath-sky);
+        }
+
+        @media (max-width: 768px) {
+            .glass-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .glass-card {
+                padding: 2rem;
+            }
+
+            .content-section h2 {
+                font-size: 2rem;
+            }
+
+            .tab-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .process-step::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -2rem;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Backgrounds -->
+    <div class="background-container">
+        <div class="background-layer active" id="bg-welcome"></div>
+        <div class="background-layer" id="bg-training"></div>
+        <div class="background-layer" id="bg-quiz"></div>
+        <div class="background-layer" id="bg-reference"></div>
+    </div>
+
+    <!-- Back to Training Plan Button -->
+    <div class="back-to-plan">
+        <button class="back-btn" onclick="window.location.href='training-plan.html'">
+            ← Back to Training Plan
+        </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('welcome')" data-tab="welcome">
+            <span>Welcome</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('training')" data-tab="training">
+            <span>Training</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('quiz')" data-tab="quiz">
+            <span>Quiz</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('reference')" data-tab="reference">
+            <span>Reference</span>
+        </button>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="content-container">
+
+        <!-- WELCOME TAB -->
+        <div class="tab-content active" id="welcome-content">
+            <div class="glass-card glass-hero">
+                <h1>NER Chapter 5 Introduction</h1>
+                <p class="tagline">Network Connection Access, Planning & Expansion</p>
+                <p class="subtitle">Entry Level | Foundation Knowledge | NEM Connections</p>
+                <div style="margin-top: 3rem;">
+                    <button class="btn btn-primary" onclick="switchTab('training')">
+                        Start Learning
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchTab('reference')">
+                        Quick Reference
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Module Overview</h2>
+                    <p>
+                        Welcome to your first deep-dive into the regulatory framework that governs how generators connect to Australia's
+                        National Electricity Market (NEM). Chapter 5 of the National Electricity Rules (NER) is the foundation document
+                        that every grid connection engineer must understand - it defines the "rules of the game" for connecting any
+                        generating system to the grid.
+                    </p>
+                    <p>
+                        As an entry-level engineer, you'll be supporting connection projects from day one. This module will give you
+                        the foundational knowledge to understand what your senior engineers are talking about, interpret connection
+                        agreements, and contribute meaningfully to project discussions.
+                    </p>
+
+                    <div class="mentor-box">
+                        <h4>From Your Lead Engineer</h4>
+                        <p>
+                            "I remember being completely lost in my first week when senior engineers started throwing around terms like
+                            'Clause 5.3.4A', 'automatic access standards', and 'GPS template'. This module covers exactly what I wish
+                            someone had explained to me. Don't try to memorize everything - focus on understanding the overall structure
+                            and where to find information. You'll reference these rules hundreds of times in your career."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what the National Electricity Rules (NER) are and why they matter</li>
+                        <li>Navigate the structure of Chapter 5 and locate key connection requirements</li>
+                        <li>Distinguish between Chapter 5 and Chapter 5A connection pathways</li>
+                        <li>Identify the four main stages of the NER connection process</li>
+                        <li>Understand the three levels of access standards (Automatic, Negotiated, Minimum)</li>
+                        <li>Know who the key stakeholders are: AEMO, NSPs, TNSPs, DNSPs</li>
+                        <li>Recognize when different registration requirements apply (5MW threshold)</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h3>Module Details</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">45-60</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Minutes</div>
+                            <div style="opacity: 0.8;">Estimated Duration</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">10</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Questions</div>
+                            <div style="opacity: 0.8;">Knowledge Check</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">500</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">Points</div>
+                            <div style="opacity: 0.8;">Maximum Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING TAB -->
+        <div class="tab-content" id="training-content">
+            <div class="glass-card glass-hero">
+                <h1>Understanding NER Chapter 5</h1>
+                <p class="tagline">Your Foundation for Grid Connection Engineering</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 1: What are the National Electricity Rules?</h2>
+
+                    <p>
+                        The National Electricity Rules (NER) are the legal framework governing Australia's National Electricity Market (NEM).
+                        Think of them as the comprehensive rulebook that everyone in the electricity industry must follow - from the massive
+                        coal-fired power stations to the newest solar farms, from transmission network operators to the market operator itself.
+                    </p>
+
+                    <div class="info-box">
+                        <h4>Key Facts About the NER</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Managed by:</strong> Australian Energy Market Commission (AEMC)</li>
+                            <li><strong>Total Chapters:</strong> 11 chapters covering all aspects of electricity market operation</li>
+                            <li><strong>Updates:</strong> Rules are regularly updated through formal rule change processes</li>
+                            <li><strong>Legal Status:</strong> These are legally binding - non-compliance has serious consequences</li>
+                            <li><strong>Coverage:</strong> QLD, NSW, VIC, SA, TAS, ACT (WA and NT have separate frameworks)</li>
+                        </ul>
+                    </div>
+
+                    <h3>Why Chapter 5 Matters to You</h3>
+
+                    <p>
+                        Chapter 5 is titled "Network Connection Access, Planning and Expansion" and it's the chapter you'll reference most
+                        frequently in grid connection engineering. It covers:
+                    </p>
+
+                    <ul>
+                        <li><strong>How to connect:</strong> The complete process for connecting new generation to the grid</li>
+                        <li><strong>What standards apply:</strong> Technical requirements your generating system must meet</li>
+                        <li><strong>Who approves connections:</strong> Roles of AEMO, TNSPs, and DNSPs in the connection process</li>
+                        <li><strong>What agreements are needed:</strong> Connection agreements, performance standards, and ongoing obligations</li>
+                    </ul>
+
+                    <div class="mentor-box">
+                        <h4>Real-World Context</h4>
+                        <p>
+                            "On every project, you'll hear references to NER clauses. When a client asks 'why do we need to do this study?'
+                            the answer often starts with 'Because NER Clause 5.x.x requires...' Understanding this framework helps you
+                            explain requirements to clients and ensures our work meets regulatory obligations. I keep a bookmarked PDF
+                            of Chapter 5 open on my desktop at all times."
+                        </p>
+                    </div>
+
+                    <h3>The Structure of Chapter 5</h3>
+
+                    <p>Chapter 5 is organized into several key parts:</p>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Part</th>
+                                <th>Coverage</th>
+                                <th>Your Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>5.1</td>
+                                <td>Introduction and Definitions</td>
+                                <td>Understand key terminology</td>
+                            </tr>
+                            <tr>
+                                <td>5.2</td>
+                                <td>Registered Participant Obligations</td>
+                                <td>Core connection requirements</td>
+                            </tr>
+                            <tr>
+                                <td>5.3</td>
+                                <td>Connection Procedures (Generators)</td>
+                                <td>The step-by-step process - HIGH PRIORITY</td>
+                            </tr>
+                            <tr>
+                                <td>5.4</td>
+                                <td>Network Planning</td>
+                                <td>How networks are planned/expanded</td>
+                            </tr>
+                            <tr>
+                                <td>5.5-5.7</td>
+                                <td>Information Provision & Disputes</td>
+                                <td>Supporting procedures</td>
+                            </tr>
+                            <tr>
+                                <td>Schedule 5.2</td>
+                                <td>Technical Standards for Generators</td>
+                                <td>Performance standards detail - CRITICAL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning-box">
+                        <h4>Important: Version Control</h4>
+                        <p>
+                            The NER is updated frequently. Always check you're using the current version. The AEMC website has the latest
+                            version. As of 2025, significant changes to access standards came into effect - projects receiving enquiry
+                            responses after 21 August 2025 must comply with new requirements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 2: The Connection Process - Four Key Stages</h2>
+
+                    <p>
+                        Under Chapter 5, connecting a generator to the NEM follows a structured four-stage process. Understanding this
+                        process is essential because each stage has specific requirements, timelines, and deliverables.
+                    </p>
+
+                    <div class="process-flow">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Connection Enquiry</div>
+                            <div class="step-desc">NER 5.3.2 - Initial discussions, preliminary assessment</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Connection Application</div>
+                            <div class="step-desc">NER 5.3.4 - Formal application, GPS submission</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Offer to Connect</div>
+                            <div class="step-desc">NER 5.3.6 - NSP provides connection offer</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Connection Agreement</div>
+                            <div class="step-desc">NER 5.3.7 - Final agreement, commissioning</div>
+                        </div>
+                    </div>
+
+                    <h3>Stage 1: Connection Enquiry (Clause 5.3.2)</h3>
+
+                    <p>
+                        This is where it all begins. A Connection Enquiry is the formal notification to the Network Service Provider
+                        (NSP) that a generator wants to connect to their network.
+                    </p>
+
+                    <h4>What Happens in This Stage:</h4>
+                    <ul>
+                        <li>Generator submits enquiry to the relevant NSP (the network owner where connection is proposed)</li>
+                        <li>NSP provides preliminary information about the connection point</li>
+                        <li>Initial technical discussions about network capacity and constraints</li>
+                        <li>Indicative costs and timelines provided</li>
+                    </ul>
+
+                    <h4>Key Information Provided by NSP:</h4>
+                    <ul>
+                        <li>Fault levels at proposed connection point</li>
+                        <li>Existing voltage regulation and power quality</li>
+                        <li>Network augmentation requirements (if any)</li>
+                        <li>Preliminary cost estimates</li>
+                        <li>Indicative timeline for connection</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <h4>Practical Tip</h4>
+                        <p>
+                            The enquiry response is based on preliminary assessment. Don't treat it as final - more detailed reviews
+                            happen during the application stage. However, significant issues flagged here (like weak network, capacity
+                            constraints) are important early warning signs.
+                        </p>
+                    </div>
+
+                    <h3>Stage 2: Connection Application (Clause 5.3.4)</h3>
+
+                    <p>
+                        This is the most intensive stage from an engineering perspective. The Connection Application includes detailed
+                        technical information and the proposed Generator Performance Standards (GPS).
+                    </p>
+
+                    <h4>Key Requirements:</h4>
+                    <ul>
+                        <li><strong>Completed GPS Template:</strong> Proposing standards for all technical requirements</li>
+                        <li><strong>Technical Studies:</strong> Load flow, fault analysis, harmonics, protection coordination</li>
+                        <li><strong>Equipment Specifications:</strong> Detailed technical data for all major equipment</li>
+                        <li><strong>Control System Description:</strong> How the plant will be controlled</li>
+                        <li><strong>Simulation Models:</strong> PSS/E and PSCAD models meeting AEMO guidelines</li>
+                    </ul>
+
+                    <div class="technical-box">
+                        <h4>Understanding Clause 5.3.4A</h4>
+                        <p>
+                            You'll hear "5.3.4A" mentioned frequently. This is the specific clause governing the GPS negotiation process:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Applicant proposes performance standards</li>
+                            <li>NSP and AEMO review the proposal</li>
+                            <li>Negotiation occurs if standards don't meet automatic access</li>
+                            <li>Results in agreed performance standards that become legally binding</li>
+                        </ul>
+                    </div>
+
+                    <h3>Stage 3: Offer to Connect (Clause 5.3.6)</h3>
+
+                    <p>
+                        Once the application is assessed and GPS are agreed, the NSP provides a formal Offer to Connect.
+                    </p>
+
+                    <h4>The Offer Includes:</h4>
+                    <ul>
+                        <li>Technical conditions for connection</li>
+                        <li>The agreed Generator Performance Standards</li>
+                        <li>Connection charges and payment terms</li>
+                        <li>Timeline for connection works</li>
+                        <li>Any network augmentation requirements</li>
+                    </ul>
+
+                    <h3>Stage 4: Connection Agreement (Clause 5.3.7)</h3>
+
+                    <p>
+                        The final stage where the generator accepts the Offer to Connect and a binding Connection Agreement is executed.
+                    </p>
+
+                    <h4>After Agreement:</h4>
+                    <ul>
+                        <li>Construction of connection assets can proceed</li>
+                        <li>Commissioning tests are planned and executed</li>
+                        <li>Performance standards are validated through testing</li>
+                        <li>Generator is registered with AEMO (if not already)</li>
+                    </ul>
+
+                    <div class="mentor-box">
+                        <h4>Timeline Reality Check</h4>
+                        <p>
+                            "In theory, Chapter 5A connections should complete in about 100 business days. In practice, a typical Chapter 5
+                            connection for a large renewable project takes 12-24 months from enquiry to connection. Complex projects in
+                            weak networks can take even longer. Always build realistic timelines into project schedules and communicate
+                            clearly with clients about potential delays."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 3: Chapter 5 vs Chapter 5A - Know the Difference</h2>
+
+                    <p>
+                        One of the first questions on any project is: "Does this connection fall under Chapter 5 or Chapter 5A?"
+                        The answer affects the entire connection process, timeline, and requirements.
+                    </p>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card chapter5">
+                            <h4>Chapter 5 Connections</h4>
+                            <ul>
+                                <li><strong>System Size:</strong> 5 MW and above</li>
+                                <li><strong>Registration:</strong> Must register with AEMO as Generator</li>
+                                <li><strong>Process:</strong> Full 4-stage process</li>
+                                <li><strong>GPS Required:</strong> Yes - full compliance</li>
+                                <li><strong>AEMO Involvement:</strong> Direct involvement in GPS review</li>
+                                <li><strong>Timeline:</strong> 12-24+ months typical</li>
+                                <li><strong>Market Participation:</strong> Full NEM participation available</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card chapter5a">
+                            <h4>Chapter 5A Connections</h4>
+                            <ul>
+                                <li><strong>System Size:</strong> 30 kW to 5 MW</li>
+                                <li><strong>Registration:</strong> Non-registered participant</li>
+                                <li><strong>Process:</strong> Streamlined (skips detailed enquiry)</li>
+                                <li><strong>GPS Required:</strong> Simplified requirements</li>
+                                <li><strong>AEMO Involvement:</strong> Limited</li>
+                                <li><strong>Timeline:</strong> Target 100 business days</li>
+                                <li><strong>Market Participation:</strong> Limited (no dispatch)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>System Size Categories</h3>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Size Category</th>
+                                <th>Applicable Rules</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Under 30 kW</td>
+                                <td>DNSP Standing Offers</td>
+                                <td>Micro embedded generation (residential solar)</td>
+                            </tr>
+                            <tr>
+                                <td>30 kW to 5 MW</td>
+                                <td>Chapter 5A (may elect 5)</td>
+                                <td>Small-medium commercial systems</td>
+                            </tr>
+                            <tr>
+                                <td>5 MW and above</td>
+                                <td>Chapter 5</td>
+                                <td>Utility-scale generation - our primary focus</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning-box">
+                        <h4>Special Case: BESS and FCAS</h4>
+                        <p>
+                            Battery Energy Storage Systems (BESS) under 5MW may still need Chapter 5 registration if they want to
+                            participate in Frequency Control Ancillary Services (FCAS) markets. The registration requirement is about
+                            market participation, not just physical connection. Always check with clients about their intended market
+                            participation before assuming Chapter 5A applies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 4: Access Standards - The Three Levels</h2>
+
+                    <p>
+                        Access standards define the technical performance that a generator must achieve to connect to the grid.
+                        Understanding the three-tier system is fundamental to GPS work.
+                    </p>
+
+                    <h3>The Three Levels Explained</h3>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Standard Level</th>
+                                <th>Abbreviation</th>
+                                <th>What It Means</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Automatic Access Standard</td>
+                                <td>AAS</td>
+                                <td>The "gold standard" - automatically acceptable, no negotiation needed</td>
+                            </tr>
+                            <tr>
+                                <td>Minimum Access Standard</td>
+                                <td>MAS</td>
+                                <td>The "floor" - you cannot connect if below this level</td>
+                            </tr>
+                            <tr>
+                                <td>Negotiated Access Standard</td>
+                                <td>NAS</td>
+                                <td>Between AAS and MAS - requires justification and AEMO approval</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>How It Works in Practice</h4>
+
+                    <p>For each technical requirement in Schedule 5.2, the NER defines:</p>
+                    <ol>
+                        <li>An Automatic Access Standard (the target performance level)</li>
+                        <li>A Minimum Access Standard (the absolute minimum acceptable)</li>
+                        <li>Rules for negotiating anything in between</li>
+                    </ol>
+
+                    <div class="technical-box">
+                        <h4>Example: Reactive Power Capability (S5.2.5.1)</h4>
+                        <p>
+                            <strong>AAS:</strong> The generating system must be capable of supplying and absorbing reactive power
+                            of at least 0.395 of its rated active power at any level within its active power capability.<br><br>
+                            <strong>MAS:</strong> A reduced capability may be acceptable if the generator can demonstrate it meets
+                            the specific needs of that connection point.<br><br>
+                            <strong>Reality:</strong> Most modern inverter-based systems (solar, wind, BESS) can achieve the AAS.
+                            Negotiated standards are more common for older technology or unusual configurations.
+                        </p>
+                    </div>
+
+                    <h3>When Negotiation is Required</h3>
+
+                    <p>
+                        If a generator cannot meet the Automatic Access Standard for any requirement, they must propose a
+                        Negotiated Access Standard. This requires:
+                    </p>
+
+                    <ul>
+                        <li>Technical justification for why AAS cannot be achieved</li>
+                        <li>Evidence that the proposed standard is as close as practicable to AAS</li>
+                        <li>Assessment of the impact on the network and other generators</li>
+                        <li>AEMO and NSP agreement that the negotiated standard is acceptable</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <h4>Practical Advice</h4>
+                        <p>
+                            In the GPS template, you'll mark each standard as "A" (Automatic) or "N" (Negotiated). Our goal is
+                            always to achieve Automatic Access Standards where possible - it simplifies the process and reduces
+                            negotiation time. However, in weak networks or with certain equipment limitations, negotiation is common
+                            and expected.
+                        </p>
+                    </div>
+
+                    <h3>Common Areas Requiring Negotiation</h3>
+
+                    <ul>
+                        <li><strong>Fault Ride-Through (S5.2.5.5):</strong> Response times in very weak networks may need adjustment</li>
+                        <li><strong>Active Power Recovery (S5.2.5.5):</strong> Large plants in low SCR conditions may need longer recovery times</li>
+                        <li><strong>Reactive Current Injection:</strong> 4% per 1% voltage drop may cause instability in some conditions</li>
+                        <li><strong>Voltage Control Response (S5.2.5.13):</strong> Settling times may need adjustment for stability</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 5: Key Stakeholders - Who Does What</h2>
+
+                    <p>
+                        Grid connections involve multiple organizations with different roles. Understanding who does what helps you
+                        know who to contact and what decisions they can make.
+                    </p>
+
+                    <h3>AEMO - Australian Energy Market Operator</h3>
+                    <ul>
+                        <li>Operates the NEM wholesale electricity market</li>
+                        <li>Manages system security and reliability</li>
+                        <li>Reviews and advises on Generator Performance Standards</li>
+                        <li>Maintains generator registration</li>
+                        <li>Develops technical guidelines and templates (GPS template, Model Guidelines)</li>
+                        <li><strong>Key Contact:</strong> connections@aemo.com.au</li>
+                    </ul>
+
+                    <h3>TNSPs - Transmission Network Service Providers</h3>
+                    <p>Own and operate the high-voltage transmission network (typically 66kV+):</p>
+                    <ul>
+                        <li><strong>Transgrid:</strong> NSW</li>
+                        <li><strong>Powerlink:</strong> Queensland</li>
+                        <li><strong>AusNet Services:</strong> Victoria</li>
+                        <li><strong>ElectraNet:</strong> South Australia</li>
+                        <li><strong>TasNetworks:</strong> Tasmania</li>
+                    </ul>
+
+                    <h3>DNSPs - Distribution Network Service Providers</h3>
+                    <p>Own and operate the distribution network (typically below 66kV):</p>
+                    <ul>
+                        <li>Multiple DNSPs operate in each state</li>
+                        <li>Handle connections for embedded generators</li>
+                        <li>Examples: Ausgrid, Endeavour Energy, Essential Energy (NSW)</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>Who Handles Your Connection?</h4>
+                        <p>
+                            The "connecting NSP" depends on where the generator physically connects:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Connecting to transmission network → TNSP is the connecting NSP</li>
+                            <li>Connecting to distribution network → DNSP is the connecting NSP</li>
+                            <li>Either way, AEMO is involved in GPS assessment for Chapter 5 connections</li>
+                        </ul>
+                    </div>
+
+                    <h3>The Connection Applicant (Our Clients)</h3>
+                    <ul>
+                        <li>The party seeking to connect the generating system</li>
+                        <li>Responsible for providing all required information</li>
+                        <li>Bears the cost of connection studies and network augmentation</li>
+                        <li>Must comply with agreed performance standards</li>
+                    </ul>
+
+                    <div class="mentor-box">
+                        <h4>Working with Stakeholders</h4>
+                        <p>
+                            "Building good relationships with AEMO and NSP contacts makes a huge difference. They're not adversaries -
+                            they want projects to succeed too. Be responsive to their questions, provide thorough information upfront,
+                            and don't be afraid to ask for clarification. A 15-minute phone call can often resolve issues that would
+                            take weeks to sort out via formal correspondence."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Part 6: Schedule 5.2 - Technical Standards Overview</h2>
+
+                    <p>
+                        Schedule 5.2 of the NER contains the detailed technical requirements that generators must meet. This is where
+                        the engineering detail lives. As an entry-level engineer, you don't need to memorize every clause, but you
+                        should understand the structure.
+                    </p>
+
+                    <h3>Key S5.2.5 Clauses (Generator Technical Performance)</h3>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Clause</th>
+                                <th>Requirement</th>
+                                <th>What It Covers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S5.2.5.1</td>
+                                <td>Reactive Power Capability</td>
+                                <td>How much reactive power the plant can supply/absorb</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.3</td>
+                                <td>Frequency Disturbance Response</td>
+                                <td>Staying connected during frequency events</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.4</td>
+                                <td>Voltage Disturbance Response</td>
+                                <td>Staying connected during voltage events</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.5</td>
+                                <td>Contingency Response (FRT)</td>
+                                <td>Fault ride-through capability</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.7</td>
+                                <td>Partial Load Rejection</td>
+                                <td>Response to sudden load changes</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.11</td>
+                                <td>Frequency Control</td>
+                                <td>Primary frequency response (MPFR)</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.13</td>
+                                <td>Voltage Control</td>
+                                <td>Voltage regulation capability</td>
+                            </tr>
+                            <tr>
+                                <td>S5.2.5.14</td>
+                                <td>Active Power Control</td>
+                                <td>Ramp rate and setpoint control</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="technical-box">
+                        <h4>Power Quality Requirements</h4>
+                        <p>
+                            Beyond the S5.2.5 clauses, generators must also meet power quality requirements:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Harmonics:</strong> Assessed per AS/NZS 61000.3.6</li>
+                            <li><strong>Voltage Flicker:</strong> Assessed per AS/NZS 61000.3.7</li>
+                            <li><strong>Voltage Unbalance:</strong> Must not cause excessive unbalance</li>
+                        </ul>
+                    </div>
+
+                    <h3>2025 Rule Changes - What's New</h3>
+
+                    <p>
+                        The AEMC published significant updates to access standards in May 2025. Projects receiving connection
+                        enquiry responses after 21 August 2025 must comply with new requirements:
+                    </p>
+
+                    <ul>
+                        <li><strong>Synchronous Condensers:</strong> Now covered by access standards</li>
+                        <li><strong>HVDC Links:</strong> Specific requirements for DC interconnectors</li>
+                        <li><strong>Grid-Forming Inverters:</strong> Standards accommodate new technology</li>
+                        <li><strong>Large Loads:</strong> Some requirements extended to large industrial loads</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>Check Project Timeline</h4>
+                        <p>
+                            Always confirm which version of access standards applies to your project. Projects with enquiry responses
+                            before 21 August 2025 may continue under previous rules, but could optionally adopt new standards. This
+                            is a critical question to clarify early in any project.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Key Takeaways</h2>
+
+                    <div class="success-box">
+                        <h4>What Every Entry-Level Engineer Should Remember</h4>
+                        <ol style="margin-top: 0.5rem;">
+                            <li><strong>Chapter 5 is your bible:</strong> It governs everything about connecting generators to the NEM</li>
+                            <li><strong>5 MW is the magic number:</strong> Above = Chapter 5, Below = potentially Chapter 5A</li>
+                            <li><strong>Four stages:</strong> Enquiry → Application → Offer → Agreement</li>
+                            <li><strong>Three access levels:</strong> Automatic (best) → Negotiated (middle) → Minimum (floor)</li>
+                            <li><strong>AEMO reviews GPS:</strong> They're a key stakeholder in performance standard negotiations</li>
+                            <li><strong>Schedule 5.2 has the detail:</strong> Technical requirements live in S5.2.5.x clauses</li>
+                            <li><strong>Versions matter:</strong> Always check which NER version applies to your project</li>
+                            <li><strong>Relationships matter:</strong> Build good working relationships with AEMO and NSP contacts</li>
+                        </ol>
+                    </div>
+
+                    <div class="mentor-box">
+                        <h4>Your Next Steps</h4>
+                        <p>
+                            "Now that you understand the framework, your next step is to look at an actual GPS template and see how
+                            these requirements translate into real documentation. Ask your project lead to show you a completed GPS
+                            from a recent project. Try to identify which clauses from S5.2.5 are addressed in each section. Don't
+                            worry if it seems overwhelming at first - we all started there."
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn btn-primary" onclick="switchTab('quiz')">
+                            Test Your Knowledge →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ TAB -->
+        <div class="tab-content" id="quiz-content">
+            <div class="glass-card glass-hero">
+                <h1>Knowledge Check</h1>
+                <p class="tagline">Test Your Understanding of NER Chapter 5</p>
+                <div class="progress-glass">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;" id="quiz-progress-text">Question <span id="current-q">1</span> of 10</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="glass-card quiz-card" id="quiz-area">
+                    <div class="question-text" id="question-text">Loading question...</div>
+                    <div id="answers-area"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" id="prev-btn" disabled>← Previous</button>
+                        <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn">Next →</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="text-align: center; display: none;" id="results-card">
+                    <h2 style="font-size: 3rem; margin-bottom: 1rem;">Quiz Complete!</h2>
+                    <div style="font-size: 4rem; margin: 2rem 0; color: var(--stockholm-neon);" id="final-score">0%</div>
+                    <h3 style="margin-bottom: 2rem;" id="result-message">Result</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;" id="result-detail">Score details</p>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="retakeQuiz()">Retake Quiz</button>
+                        <button class="btn btn-primary" onclick="window.location.href='training-plan.html'">Back to Training Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENCE TAB -->
+        <div class="tab-content" id="reference-content">
+            <div class="glass-card glass-hero">
+                <h1>Quick Reference Guide</h1>
+                <p class="tagline">NER Chapter 5 at a Glance</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>Connection Process Summary</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>NER Clause</th>
+                                <th>Key Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. Connection Enquiry</td>
+                                <td>5.3.2</td>
+                                <td>Enquiry Response (preliminary info)</td>
+                            </tr>
+                            <tr>
+                                <td>2. Connection Application</td>
+                                <td>5.3.4 / 5.3.4A</td>
+                                <td>GPS Assessment, System Strength Assessment</td>
+                            </tr>
+                            <tr>
+                                <td>3. Offer to Connect</td>
+                                <td>5.3.6</td>
+                                <td>Formal Connection Offer</td>
+                            </tr>
+                            <tr>
+                                <td>4. Connection Agreement</td>
+                                <td>5.3.7</td>
+                                <td>Executed Agreement, Commissioning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>Chapter 5 vs 5A Quick Guide</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Criteria</th>
+                                <th>Chapter 5</th>
+                                <th>Chapter 5A</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>System Size</td>
+                                <td>≥ 5 MW</td>
+                                <td>30 kW - 5 MW</td>
+                            </tr>
+                            <tr>
+                                <td>Registration</td>
+                                <td>Required</td>
+                                <td>Not Required</td>
+                            </tr>
+                            <tr>
+                                <td>AEMO Involvement</td>
+                                <td>Full GPS Review</td>
+                                <td>Limited</td>
+                            </tr>
+                            <tr>
+                                <td>Typical Timeline</td>
+                                <td>12-24 months</td>
+                                <td>~100 business days</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>Access Standards Levels</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Abbrev.</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Automatic Access Standard</td>
+                                <td>AAS</td>
+                                <td>Target - automatically acceptable</td>
+                            </tr>
+                            <tr>
+                                <td>Negotiated Access Standard</td>
+                                <td>NAS</td>
+                                <td>Between AAS and MAS - requires justification</td>
+                            </tr>
+                            <tr>
+                                <td>Minimum Access Standard</td>
+                                <td>MAS</td>
+                                <td>Floor - cannot connect if below this</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>Key S5.2.5 Clauses</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Clause</th>
+                                <th>Topic</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>S5.2.5.1</td><td>Reactive Power Capability</td></tr>
+                            <tr><td>S5.2.5.3</td><td>Frequency Disturbance Response</td></tr>
+                            <tr><td>S5.2.5.4</td><td>Voltage Disturbance Response</td></tr>
+                            <tr><td>S5.2.5.5</td><td>Contingency Response / Fault Ride-Through</td></tr>
+                            <tr><td>S5.2.5.7</td><td>Partial Load Rejection</td></tr>
+                            <tr><td>S5.2.5.11</td><td>Frequency Control (Primary Freq Response)</td></tr>
+                            <tr><td>S5.2.5.13</td><td>Voltage Control</td></tr>
+                            <tr><td>S5.2.5.14</td><td>Active Power Control</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>Key Contacts & Resources</h2>
+                    <ul>
+                        <li><strong>AEMO Connections:</strong> connections@aemo.com.au</li>
+                        <li><strong>NER Current Version:</strong> aemc.gov.au/energy-rules/national-electricity-rules</li>
+                        <li><strong>AEMO GPS Template:</strong> aemo.com.au (Network Connections section)</li>
+                        <li><strong>Power System Model Guidelines:</strong> aemo.com.au (Modelling Requirements)</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>Key Acronyms</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Acronym</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>NER</td><td>National Electricity Rules</td></tr>
+                            <tr><td>NEM</td><td>National Electricity Market</td></tr>
+                            <tr><td>AEMO</td><td>Australian Energy Market Operator</td></tr>
+                            <tr><td>AEMC</td><td>Australian Energy Market Commission</td></tr>
+                            <tr><td>GPS</td><td>Generator Performance Standards</td></tr>
+                            <tr><td>NSP</td><td>Network Service Provider</td></tr>
+                            <tr><td>TNSP</td><td>Transmission Network Service Provider</td></tr>
+                            <tr><td>DNSP</td><td>Distribution Network Service Provider</td></tr>
+                            <tr><td>AAS</td><td>Automatic Access Standard</td></tr>
+                            <tr><td>MAS</td><td>Minimum Access Standard</td></tr>
+                            <tr><td>NAS</td><td>Negotiated Access Standard</td></tr>
+                            <tr><td>FRT</td><td>Fault Ride-Through</td></tr>
+                            <tr><td>SCR</td><td>Short Circuit Ratio</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                question: "What is the minimum system size that requires connection under Chapter 5 (as a registered participant)?",
+                answers: [
+                    "1 MW",
+                    "5 MW",
+                    "10 MW",
+                    "30 kW"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which organization reviews and advises on Generator Performance Standards in the NEM?",
+                answers: [
+                    "AEMC",
+                    "AEMO",
+                    "DNSP only",
+                    "State Government"
+                ],
+                correct: 1
+            },
+            {
+                question: "What are the four main stages of the NER Chapter 5 connection process in order?",
+                answers: [
+                    "Application, Enquiry, Agreement, Offer",
+                    "Enquiry, Application, Offer, Agreement",
+                    "Offer, Application, Enquiry, Agreement",
+                    "Agreement, Offer, Application, Enquiry"
+                ],
+                correct: 1
+            },
+            {
+                question: "What does 'AAS' stand for in the context of access standards?",
+                answers: [
+                    "Australian Access Standard",
+                    "Automatic Access Standard",
+                    "Alternative Access Standard",
+                    "Approved Access Standard"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which NER clause specifically covers the negotiation and agreement of generator performance standards?",
+                answers: [
+                    "Clause 5.2.2",
+                    "Clause 5.3.2",
+                    "Clause 5.3.4A",
+                    "Clause 5.4.1"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is the main advantage of Chapter 5A over Chapter 5 for eligible connections?",
+                answers: [
+                    "Higher performance requirements",
+                    "Streamlined process with shorter timeline",
+                    "Lower costs",
+                    "Direct market participation"
+                ],
+                correct: 1
+            },
+            {
+                question: "If a generator cannot meet the Automatic Access Standard, what level can they propose?",
+                answers: [
+                    "Sub-Minimum Access Standard",
+                    "Alternative Access Standard",
+                    "Negotiated Access Standard",
+                    "Provisional Access Standard"
+                ],
+                correct: 2
+            },
+            {
+                question: "Which Schedule in the NER contains the detailed technical requirements for generators?",
+                answers: [
+                    "Schedule 5.1",
+                    "Schedule 5.2",
+                    "Schedule 5.3",
+                    "Schedule 5.4"
+                ],
+                correct: 1
+            },
+            {
+                question: "What type of network service provider typically handles connections at 66kV and above?",
+                answers: [
+                    "DNSP",
+                    "TNSP",
+                    "AEMO",
+                    "Local Council"
+                ],
+                correct: 1
+            },
+            {
+                question: "When did new NEM access standards become mandatory for projects receiving enquiry responses?",
+                answers: [
+                    "1 January 2024",
+                    "1 July 2024",
+                    "21 August 2025",
+                    "1 January 2026"
+                ],
+                correct: 2
+            }
+        ];
+
+        // Quiz State
+        let currentQuestion = 0;
+        let selectedAnswers = new Array(quizData.length).fill(null);
+        let quizCompleted = false;
+
+        // Initialize quiz
+        function initQuiz() {
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Load current question
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('question-text').textContent = q.question;
+
+            const answersArea = document.getElementById('answers-area');
+            answersArea.innerHTML = '';
+
+            q.answers.forEach((answer, index) => {
+                const div = document.createElement('div');
+                div.className = 'answer-option';
+                if (selectedAnswers[currentQuestion] === index) {
+                    div.classList.add('selected');
+                }
+                div.textContent = answer;
+                div.onclick = () => selectAnswer(index);
+                answersArea.appendChild(div);
+            });
+
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent =
+                currentQuestion === quizData.length - 1 ? 'Finish Quiz →' : 'Next →';
+        }
+
+        // Select answer
+        function selectAnswer(index) {
+            selectedAnswers[currentQuestion] = index;
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                updateProgress();
+            } else {
+                // Finish quiz
+                showResults();
+            }
+        }
+
+        // Previous question
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+        }
+
+        // Show results
+        function showResults() {
+            let correct = 0;
+            quizData.forEach((q, index) => {
+                if (selectedAnswers[index] === q.correct) {
+                    correct++;
+                }
+            });
+
+            const percentage = Math.round((correct / quizData.length) * 100);
+            const points = Math.round((correct / quizData.length) * 500);
+
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('results-card').style.display = 'block';
+            document.getElementById('final-score').textContent = percentage + '%';
+            document.getElementById('result-detail').textContent =
+                `You scored ${correct} out of ${quizData.length} questions correctly (${points} points)`;
+
+            if (percentage >= 90) {
+                document.getElementById('result-message').textContent = 'Outstanding! Expert Level!';
+            } else if (percentage >= 70) {
+                document.getElementById('result-message').textContent = 'Well Done! You Passed!';
+            } else {
+                document.getElementById('result-message').textContent = 'Keep Learning - Review the material and try again';
+            }
+        }
+
+        // Retake quiz
+        function retakeQuiz() {
+            currentQuestion = 0;
+            selectedAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('quiz-area').style.display = 'block';
+            initQuiz();
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+
+            // Change background
+            changeBackground(tabName);
+        }
+
+        // Background changing
+        function changeBackground(tabName) {
+            const backgrounds = document.querySelectorAll('.background-layer');
+            backgrounds.forEach(bg => bg.classList.remove('active'));
+
+            const activeBg = document.getElementById('bg-' + tabName);
+            if (activeBg) {
+                activeBg.classList.add('active');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            changeBackground('welcome');
+            initQuiz();
+        });
+    </script>
+</body>
+</html>

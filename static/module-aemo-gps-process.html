@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEMO GPS Document Process | Grid Engineering Training</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Vysus Brand Colors */
+            --stockholm-neon: #00E3A9;
+            --malmo-green: #005454;
+            --barcelona-dusk: #3c1363;
+            --houston-pink: #f188f4;
+            --mumbai-magenta: #8e329c;
+            --hellerup-royal: #05275e;
+            --bath-sky: #4b81ef;
+            --orlando-red: #f92d63;
+            --trondheim-night: #1d1d1b;
+            --scandinavia-rock: #485559;
+            --bergen-rain: #dadada;
+            --oslo-snow: #f8f8f8;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--trondheim-night);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background System */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background-layer.active {
+            opacity: 1;
+        }
+
+        .background-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.75) 100%);
+        }
+
+        #bg-welcome {
+            background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=95');
+        }
+
+        #bg-training {
+            background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=95');
+        }
+
+        #bg-quiz {
+            background-image: url('https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1920&q=90');
+        }
+
+        #bg-reference {
+            background-image: url('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=1920&q=95');
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            animation: floatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .tab-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50px;
+            z-index: -1;
+        }
+
+        .tab-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-btn:hover {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-btn:hover::before {
+            opacity: 0.4;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 227, 169, 0.5);
+        }
+
+        .tab-btn.active::before {
+            opacity: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem 2rem;
+            position: relative;
+        }
+
+        .tab-content {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 8rem;
+            left: 0;
+            right: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(40px);
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            top: 0;
+            transform: translateY(0);
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(80px) saturate(200%);
+            -webkit-backdrop-filter: blur(80px) saturate(200%);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 60px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 227, 169, 0.2);
+        }
+
+        .glass-hero {
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+        }
+
+        .glass-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--stockholm-neon), white, var(--bath-sky));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-hero .tagline {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+            color: var(--stockholm-neon);
+        }
+
+        .glass-hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.85;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Content Sections */
+        .content-section {
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .content-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--stockholm-neon);
+            margin-top: 2rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: var(--bath-sky);
+            margin-top: 1.5rem;
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+        }
+
+        .content-section strong {
+            color: var(--stockholm-neon);
+        }
+
+        /* Process Flow */
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .process-step {
+            background: rgba(0, 227, 169, 0.1);
+            border: 2px solid rgba(0, 227, 169, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--stockholm-neon);
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50%;
+            line-height: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .step-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: rgba(75, 129, 239, 0.15);
+            border-left: 4px solid var(--bath-sky);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: var(--bath-sky);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: rgba(0, 227, 169, 0.15);
+            border-left: 4px solid var(--stockholm-neon);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .success-box h4 {
+            color: var(--stockholm-neon);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: rgba(249, 45, 99, 0.15);
+            border-left: 4px solid var(--orlando-red);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: var(--orlando-red);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .technical-box {
+            background: rgba(142, 50, 156, 0.15);
+            border-left: 4px solid var(--mumbai-magenta);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .technical-box h4 {
+            color: var(--mumbai-magenta);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+        }
+
+        .data-table th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 700;
+            color: white;
+        }
+
+        .data-table td {
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .data-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 227, 169, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* Back Button */
+        .back-to-plan {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 9999;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            transform: translateX(-5px);
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(60px);
+            border-radius: 25px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .answer-option {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .answer-option:hover {
+            background: rgba(0, 227, 169, 0.1);
+            border-color: var(--stockholm-neon);
+            transform: translateX(10px);
+        }
+
+        .answer-option.selected {
+            background: rgba(0, 227, 169, 0.2);
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.3);
+        }
+
+        .answer-option.correct {
+            background: rgba(0, 227, 169, 0.3);
+            border-color: var(--stockholm-neon);
+        }
+
+        .answer-option.incorrect {
+            background: rgba(249, 45, 99, 0.2);
+            border-color: var(--orlando-red);
+        }
+
+        .progress-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            height: 20px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--stockholm-neon), var(--malmo-green));
+            border-radius: 50px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .glass-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .glass-card {
+                padding: 2rem;
+            }
+
+            .content-section h2 {
+                font-size: 2rem;
+            }
+
+            .tab-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .process-step::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -2rem;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Backgrounds -->
+    <div class="background-container">
+        <div class="background-layer active" id="bg-welcome"></div>
+        <div class="background-layer" id="bg-training"></div>
+        <div class="background-layer" id="bg-quiz"></div>
+        <div class="background-layer" id="bg-reference"></div>
+    </div>
+
+    <!-- Back to Training Plan Button -->
+    <div class="back-to-plan">
+        <button class="back-btn" onclick="window.location.href='training-plan.html'">
+            ← Back to Training Plan
+        </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+        <button class="tab-btn active" onclick="switchTab('welcome')" data-tab="welcome">
+            <span>👋 Welcome</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('training')" data-tab="training">
+            <span>🎯 Training</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('quiz')" data-tab="quiz">
+            <span>❓ Quiz</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('reference')" data-tab="reference">
+            <span>📚 Reference</span>
+        </button>
+    </nav>
+
+    <!-- Content Container -->
+    <div class="content-container">
+
+        <!-- WELCOME TAB -->
+        <div class="tab-content active" id="welcome-content">
+            <div class="glass-card glass-hero">
+                <h1>⚡ AEMO GPS Document Process</h1>
+                <p class="tagline">Generator Performance Standards Compliance</p>
+                <p class="subtitle">Senior+ Level | NEM Clause 5.2.x | Technical Compliance</p>
+                <div style="margin-top: 3rem;">
+                    <button class="btn btn-primary" onclick="switchTab('training')">
+                        🎯 Start Learning
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchTab('reference')">
+                        📚 Quick Reference
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>📋 Module Overview</h2>
+                    <p>
+                        This module provides comprehensive training on the AEMO Generator Performance Standards (GPS) document submission process,
+                        covering NEM Clause 5.2.x requirements, technical studies including harmonics analysis, and the complete compliance pathway
+                        from project initiation to final acceptance.
+                    </p>
+                    <p>
+                        Understanding the GPS process is critical for grid connection engineers working on renewable energy projects including
+                        solar farms, wind farms, and battery energy storage systems (BESS) connecting to the National Electricity Market (NEM).
+                    </p>
+                </div>
+
+                <div class="content-section">
+                    <h3>🎯 Learning Objectives</h3>
+                    <ul>
+                        <li>Understand the complete AEMO GPS documentation process and submission requirements</li>
+                        <li>Navigate NEM Clause 5.2.x stages from initial application through to commissioning</li>
+                        <li>Conduct and document harmonics analysis in compliance with AEMO requirements</li>
+                        <li>Prepare technical studies and supporting documentation for GPS submissions</li>
+                        <li>Manage stakeholder communications throughout the GPS process</li>
+                        <li>Apply lessons learned from recent project experience</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h3>⏱️ Module Details</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏰</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">60-75 minutes</div>
+                            <div style="opacity: 0.8;">Estimated Duration</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">❓</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">8 Questions</div>
+                            <div style="opacity: 0.8;">Knowledge Check</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⭐</div>
+                            <div style="font-size: 1.2rem; color: var(--stockholm-neon); font-weight: 600;">800 Points</div>
+                            <div style="opacity: 0.8;">Maximum Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRAINING TAB -->
+        <div class="tab-content" id="training-content">
+            <div class="glass-card glass-hero">
+                <h1>🎯 GPS Documentation Process</h1>
+                <p class="tagline">Master the AEMO Compliance Pathway</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>📚 Introduction to AEMO GPS Process</h2>
+
+                    <p>
+                        The Australian Energy Market Operator (AEMO) requires all new generating systems connecting to the National Electricity Market (NEM)
+                        to demonstrate compliance with Generator Performance Standards (GPS) as defined in the National Electricity Rules (NER).
+                        This process ensures that new generation maintains power system security and reliability.
+                    </p>
+
+                    <div class="info-box">
+                        <h4>💡 What is GPS?</h4>
+                        <p>
+                            Generator Performance Standards are technical requirements that generating systems must meet to connect to and operate
+                            within the NEM. These standards cover aspects including voltage control, frequency control, active and reactive power capability,
+                            response to system disturbances, and power quality (including harmonics).
+                        </p>
+                    </div>
+
+                    <h3>🔄 NEM Clause 5.2.x Overview</h3>
+
+                    <p>
+                        NEM Clause 5.2 outlines the connection application process. The key stages relevant to GPS documentation include:
+                    </p>
+
+                    <ul>
+                        <li><strong>Clause 5.2.2:</strong> Preliminary enquiry - Initial discussions with AEMO regarding connection</li>
+                        <li><strong>Clause 5.2.3:</strong> Connection application - Formal application to connect generating system</li>
+                        <li><strong>Clause 5.2.5:</strong> Performance standards - Negotiation and agreement of performance standards</li>
+                        <li><strong>Clause 5.2.6:</strong> Conditions for connection - Technical conditions and commissioning requirements</li>
+                        <li><strong>Clause 5.2.7:</strong> Commissioning and testing - Validation of GPS compliance through testing</li>
+                    </ul>
+
+                    <div class="technical-box">
+                        <h4>🔧 Clause 5.2.5 - Performance Standards Detail</h4>
+                        <p>
+                            Clause 5.2.5 is the most critical section for GPS compliance. Under this clause, the generator must:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Propose performance standards that at minimum meet the automatic access standards</li>
+                            <li>Negotiate any variations from automatic access standards with AEMO</li>
+                            <li>Provide technical studies demonstrating compliance with proposed standards</li>
+                            <li>Address AEMO's technical requirements and concerns through iterative submissions</li>
+                        </ul>
+                    </div>
+
+                    <h3>📋 GPS Document Submission Process</h3>
+
+                    <p>
+                        The GPS documentation process follows a structured pathway with multiple submission and review stages:
+                    </p>
+
+                    <div class="process-flow">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Initial Enquiry</div>
+                            <div class="step-desc">Preliminary discussions with AEMO and TNSP</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Application</div>
+                            <div class="step-desc">Formal connection application submitted</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-title">GPS Package</div>
+                            <div class="step-desc">Comprehensive technical studies and documentation</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <div class="step-title">AEMO Review</div>
+                            <div class="step-desc">Technical assessment and RFI process</div>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">5</div>
+                            <div class="step-title">Acceptance</div>
+                            <div class="step-desc">GPS approval and commissioning clearance</div>
+                        </div>
+                    </div>
+
+                    <h3>📄 GPS Package Contents</h3>
+
+                    <p>
+                        A complete GPS submission package typically includes the following documents and technical studies:
+                    </p>
+
+                    <h4>Core Documentation</h4>
+                    <ul>
+                        <li><strong>GPS Template:</strong> Completed AEMO GPS template with all performance standards declared</li>
+                        <li><strong>Project Description:</strong> Detailed description of generating system, technology, and configuration</li>
+                        <li><strong>Single Line Diagram:</strong> Electrical schematic showing connection arrangement</li>
+                        <li><strong>Equipment Specifications:</strong> Technical datasheets for all major equipment (inverters, transformers, etc.)</li>
+                    </ul>
+
+                    <h4>Technical Studies</h4>
+                    <ul>
+                        <li><strong>Steady-State Analysis:</strong> Load flow studies showing voltage and power flow under various scenarios</li>
+                        <li><strong>Short Circuit Analysis:</strong> Fault level contribution calculations</li>
+                        <li><strong>Harmonics Study:</strong> Assessment of harmonic emissions and compliance with limits</li>
+                        <li><strong>Voltage Flicker Study:</strong> Analysis of voltage fluctuations during operation</li>
+                        <li><strong>Reactive Power Capability:</strong> Demonstration of Q capability across operating range</li>
+                        <li><strong>Disturbance Ride-Through:</strong> Evidence of compliance with fault ride-through requirements</li>
+                    </ul>
+
+                    <h4>Control System Documentation</h4>
+                    <ul>
+                        <li><strong>Control Philosophy:</strong> Description of control systems and operating modes</li>
+                        <li><strong>Protection Settings:</strong> Relay settings and coordination studies</li>
+                        <li><strong>SCADA/Communications:</strong> Communications architecture and data points</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <h4>✅ Best Practice Tip</h4>
+                        <p>
+                            Start the GPS package preparation early in the project lifecycle. Many studies require detailed equipment information
+                            that may not be available until procurement is advanced. Coordinate closely with equipment suppliers to obtain
+                            necessary technical data and simulation models.
+                        </p>
+                    </div>
+
+                    <h3>⚡ Harmonics Analysis - Deep Dive</h3>
+
+                    <p>
+                        Harmonics analysis is a critical component of GPS submissions, particularly for inverter-based generation (solar, wind, BESS).
+                        This study assesses whether the project will comply with harmonic voltage and current limits at the connection point.
+                    </p>
+
+                    <h4>Regulatory Framework</h4>
+                    <ul>
+                        <li><strong>NER S5.2.3:</strong> Automatic access standard for power quality (voltage harmonics)</li>
+                        <li><strong>AS/NZS 61000.3.6:</strong> Assessment of emission limits for the connection of distorting installations</li>
+                        <li><strong>AEMO Planning Criteria:</strong> Network planning standards for power quality</li>
+                    </ul>
+
+                    <h4>Harmonic Voltage Limits (AS/NZS 61000.3.6)</h4>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Harmonic Order</th>
+                                <th>HV/EHV (66kV+) Compatibility Level</th>
+                                <th>Typical Planning Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>3rd</td>
+                                <td>2.0%</td>
+                                <td>1.6%</td>
+                            </tr>
+                            <tr>
+                                <td>5th</td>
+                                <td>2.0%</td>
+                                <td>1.6%</td>
+                            </tr>
+                            <tr>
+                                <td>7th</td>
+                                <td>2.0%</td>
+                                <td>1.6%</td>
+                            </tr>
+                            <tr>
+                                <td>11th</td>
+                                <td>1.5%</td>
+                                <td>1.2%</td>
+                            </tr>
+                            <tr>
+                                <td>13th</td>
+                                <td>1.5%</td>
+                                <td>1.2%</td>
+                            </tr>
+                            <tr>
+                                <td>THD</td>
+                                <td>3.0%</td>
+                                <td>2.4%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Harmonics Study Methodology</h4>
+
+                    <p>
+                        A comprehensive harmonics study for GPS submission typically follows these steps:
+                    </p>
+
+                    <ol>
+                        <li><strong>Network Model Development:</strong> Build detailed model of connection network in software (PSCAD, DIgSILENT, PSSE)</li>
+                        <li><strong>Background Harmonics:</strong> Include existing background harmonic levels from TNSP data</li>
+                        <li><strong>Source Modeling:</strong> Model inverter harmonic emissions using manufacturer data or IEEE 1547 defaults</li>
+                        <li><strong>Resonance Assessment:</strong> Identify potential parallel/series resonance points in network</li>
+                        <li><strong>Worst-Case Scenarios:</strong> Simulate various operating conditions (full output, partial output, network configurations)</li>
+                        <li><strong>Harmonic Summation:</strong> Calculate individual and total harmonic distortion at connection point</li>
+                        <li><strong>Compliance Assessment:</strong> Compare results against applicable limits</li>
+                        <li><strong>Mitigation (if required):</strong> Design filters or other mitigation measures if limits exceeded</li>
+                    </ol>
+
+                    <div class="technical-box">
+                        <h4>🔧 Real Project Example: Solar Farm Harmonics Study</h4>
+                        <p>
+                            <strong>Project:</strong> 200MW Solar Farm connecting at 132kV<br>
+                            <strong>Challenge:</strong> Initial studies showed 7th harmonic voltage exceeded planning level (1.8% vs 1.6% limit)<br>
+                            <strong>Root Cause:</strong> Network parallel resonance near 7th harmonic due to combination of line capacitance and transformer inductance<br>
+                            <strong>Solution:</strong> Modified transformer specification to detune resonance point; final study showed compliance with 1.4% THD<br>
+                            <strong>Key Learning:</strong> Early engagement with TNSP on network parameters critical for accurate modeling
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Common Harmonics Study Pitfalls</h4>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Inadequate network model:</strong> Using simplified network can miss resonance conditions</li>
+                            <li><strong>Generic inverter data:</strong> Using default values rather than project-specific manufacturer data</li>
+                            <li><strong>Ignoring background harmonics:</strong> Failure to include existing network harmonic levels</li>
+                            <li><strong>Limited operating scenarios:</strong> Only modeling full output rather than range of conditions</li>
+                            <li><strong>Phase angle neglect:</strong> Not considering phase relationships in harmonic summation</li>
+                        </ul>
+                    </div>
+
+                    <h3>🔄 AEMO Review and RFI Process</h3>
+
+                    <p>
+                        After GPS package submission, AEMO conducts a detailed technical review. This typically results in one or more
+                        Requests for Information (RFI) requiring additional clarification or studies.
+                    </p>
+
+                    <h4>Typical AEMO Review Timeline</h4>
+                    <ul>
+                        <li><strong>Initial Review:</strong> 20-30 business days from submission</li>
+                        <li><strong>RFI Response:</strong> 15-20 business days for proponent response</li>
+                        <li><strong>Follow-up Review:</strong> 10-15 business days for AEMO assessment</li>
+                        <li><strong>Iterative Process:</strong> 2-4 RFI rounds typical for complex projects</li>
+                        <li><strong>Total Duration:</strong> 3-6 months from initial submission to final acceptance</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>💡 Managing the RFI Process</h4>
+                        <p>
+                            Successful navigation of the RFI process requires clear communication and thorough responses:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>Respond to each RFI point systematically with clear references to supporting documentation</li>
+                            <li>Provide additional analysis or clarification where requested rather than simply restating previous submissions</li>
+                            <li>Engage in pre-submission discussions with AEMO to understand their concerns</li>
+                            <li>Keep client informed of RFI status and any implications for project schedule</li>
+                            <li>Document all assumptions and methodologies clearly to minimize back-and-forth</li>
+                        </ul>
+                    </div>
+
+                    <h3>✅ Commissioning and Testing</h3>
+
+                    <p>
+                        Following GPS acceptance, the project proceeds to commissioning phase where GPS compliance must be validated through testing:
+                    </p>
+
+                    <h4>Key GPS Commissioning Tests</h4>
+                    <ul>
+                        <li><strong>Active Power Capability:</strong> Demonstrate full MW output capability</li>
+                        <li><strong>Reactive Power Capability:</strong> Verify Q capability across specified operating range</li>
+                        <li><strong>Voltage Control:</strong> Test voltage regulation and response to setpoint changes</li>
+                        <li><strong>Frequency Control:</strong> Validate frequency response and droop settings</li>
+                        <li><strong>Disturbance Ride-Through:</strong> Demonstrate fault ride-through capability (may use simulation if testing not feasible)</li>
+                        <li><strong>Power Quality:</strong> Measure harmonic emissions during operation and verify compliance</li>
+                        <li><strong>Protection Systems:</strong> Test protection schemes and coordination</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <h4>✅ Commissioning Best Practice</h4>
+                        <p>
+                            Develop a detailed commissioning test plan early in the project and submit to AEMO for review. This ensures
+                            alignment on test methodologies and acceptance criteria before commissioning begins. Include contingency
+                            plans for tests that may not achieve target performance on first attempt.
+                        </p>
+                    </div>
+
+                    <h3>📊 Current Project Case Studies</h3>
+
+                    <h4>Case Study 1: BESS Project - Harmonics Challenge</h4>
+
+                    <div class="technical-box">
+                        <h4>🔋 200MW/400MWh Battery Energy Storage System</h4>
+                        <p>
+                            <strong>Location:</strong> Victoria, 220kV connection<br>
+                            <strong>Issue:</strong> High frequency harmonics (25th-49th) approaching limits due to PWM switching frequency<br>
+                            <strong>Analysis:</strong> Detailed PSCAD electromagnetic transient (EMT) study required to accurately model high-frequency behavior<br>
+                            <strong>Outcome:</strong> Demonstrated compliance after including battery filter impedance in model; AEMO accepted EMT study approach<br>
+                            <strong>Timeline Impact:</strong> Additional EMT study added 6 weeks to GPS process<br>
+                            <strong>Key Lesson:</strong> For BESS projects, anticipate need for high-frequency harmonic analysis beyond standard frequency-domain studies
+                        </p>
+                    </div>
+
+                    <h4>Case Study 2: Wind Farm - Voltage Control GPS</h4>
+
+                    <div class="technical-box">
+                        <h4>💨 350MW Wind Farm - Clause 5.2.5.1 Compliance</h4>
+                        <p>
+                            <strong>Location:</strong> NSW, 132kV connection<br>
+                            <strong>Challenge:</strong> Demonstrating adequate voltage control during wind variations<br>
+                            <strong>Approach:</strong> Dynamic simulation showing voltage regulation under wind ramp scenarios<br>
+                            <strong>RFI Focus:</strong> AEMO requested additional analysis of voltage behavior during network disturbances<br>
+                            <strong>Resolution:</strong> Provided time-domain simulation results showing voltage recovery within specified timeframes<br>
+                            <strong>Key Lesson:</strong> Dynamic modeling capabilities essential for wind/solar GPS; static studies insufficient
+                        </p>
+                    </div>
+
+                    <h4>Case Study 3: Solar Farm - Multiple RFI Rounds</h4>
+
+                    <div class="technical-box">
+                        <h4>☀️ 150MW Solar Farm - Complex Review Process</h4>
+                        <p>
+                            <strong>Location:</strong> Queensland, 110kV connection<br>
+                            <strong>Complexity:</strong> Weak network with existing power quality issues<br>
+                            <strong>GPS Journey:</strong> 4 rounds of RFI over 5 months<br>
+                            <strong>Main Issues:</strong> Harmonics interaction with existing background, reactive power capability during low voltage events<br>
+                            <strong>Final Solution:</strong> Additional filtering, enhanced inverter controls, revised reactive power commitments<br>
+                            <strong>Key Lesson:</strong> In weak networks, expect extended GPS review and potential need for enhanced mitigation measures
+                        </p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Project Schedule Implications</h4>
+                        <p>
+                            GPS process duration can significantly impact project schedules. Build adequate contingency:
+                        </p>
+                        <ul style="margin-top: 0.5rem;">
+                            <li><strong>Simple projects:</strong> 3-4 months from submission to acceptance</li>
+                            <li><strong>Standard projects:</strong> 4-6 months including typical RFI rounds</li>
+                            <li><strong>Complex projects:</strong> 6-9 months for weak networks or novel technologies</li>
+                            <li><strong>Critical path:</strong> GPS acceptance typically required before final commissioning stages</li>
+                        </ul>
+                    </div>
+
+                    <h3>🎯 Key Takeaways</h3>
+
+                    <div class="success-box">
+                        <h4>✅ Success Factors for GPS Submissions</h4>
+                        <ol style="margin-top: 0.5rem;">
+                            <li><strong>Early Engagement:</strong> Discuss project with AEMO early to understand specific concerns</li>
+                            <li><strong>Complete Documentation:</strong> Ensure all required studies and documents included in initial submission</li>
+                            <li><strong>Quality Over Speed:</strong> Thorough initial submission reduces RFI rounds and overall timeline</li>
+                            <li><strong>Technical Rigor:</strong> Use appropriate modeling tools and methodologies for each study</li>
+                            <li><strong>Clear Communication:</strong> Present results clearly with well-structured reports and supporting data</li>
+                            <li><strong>Equipment Coordination:</strong> Work closely with suppliers to obtain accurate technical data</li>
+                            <li><strong>Lessons Learned:</strong> Apply learnings from previous projects and industry experience</li>
+                            <li><strong>Schedule Management:</strong> Build realistic timeline with contingency for review process</li>
+                        </ol>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button class="btn btn-primary" onclick="switchTab('quiz')">
+                            Test Your Knowledge →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ TAB -->
+        <div class="tab-content" id="quiz-content">
+            <div class="glass-card glass-hero">
+                <h1>❓ Knowledge Check - AEMO GPS Process</h1>
+                <p class="tagline">Test Your Understanding</p>
+                <div class="progress-glass">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;" id="quiz-progress-text">Question <span id="current-q">1</span> of 8</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="glass-card quiz-card" id="quiz-area">
+                    <div class="question-text" id="question-text">Loading question...</div>
+                    <div id="answers-area"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="previousQuestion()" id="prev-btn" disabled>← Previous</button>
+                        <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn">Next →</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="text-align: center; display: none;" id="results-card">
+                    <h2 style="font-size: 3rem; margin-bottom: 1rem;">🎉 Quiz Complete!</h2>
+                    <div style="font-size: 4rem; margin: 2rem 0; color: var(--stockholm-neon);" id="final-score">0%</div>
+                    <h3 style="margin-bottom: 2rem;" id="result-message">Result</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;" id="result-detail">Score details</p>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="retakeQuiz()">↻ Retake Quiz</button>
+                        <button class="btn btn-primary" onclick="window.location.href='training-plan.html'">← Back to Training Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENCE TAB -->
+        <div class="tab-content" id="reference-content">
+            <div class="glass-card glass-hero">
+                <h1>📚 GPS Process Quick Reference</h1>
+                <p class="tagline">Key Information at Your Fingertips</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section">
+                    <h2>📋 GPS Submission Checklist</h2>
+
+                    <h3>☐ Core Documentation</h3>
+                    <ul>
+                        <li>☐ Completed AEMO GPS template</li>
+                        <li>☐ Project description document</li>
+                        <li>☐ Single line diagrams (connection arrangement)</li>
+                        <li>☐ Equipment technical specifications</li>
+                        <li>☐ Control system description</li>
+                    </ul>
+
+                    <h3>☐ Technical Studies</h3>
+                    <ul>
+                        <li>☐ Steady-state load flow analysis</li>
+                        <li>☐ Short circuit fault level study</li>
+                        <li>☐ Harmonics analysis per AS/NZS 61000.3.6</li>
+                        <li>☐ Voltage flicker assessment</li>
+                        <li>☐ Reactive power capability curves</li>
+                        <li>☐ Disturbance ride-through analysis</li>
+                        <li>☐ Protection coordination study</li>
+                    </ul>
+
+                    <h3>☐ Supporting Documents</h3>
+                    <ul>
+                        <li>☐ Manufacturer datasheets and certificates</li>
+                        <li>☐ Simulation model files (if applicable)</li>
+                        <li>☐ SCADA/communications specifications</li>
+                        <li>☐ Commissioning test plan</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>⚡ Harmonic Voltage Limits - Quick Table</h2>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Harmonic</th>
+                                <th>HV Compatibility (%)</th>
+                                <th>Planning Level (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>3rd</td><td>2.0</td><td>1.6</td></tr>
+                            <tr><td>5th</td><td>2.0</td><td>1.6</td></tr>
+                            <tr><td>7th</td><td>2.0</td><td>1.6</td></tr>
+                            <tr><td>11th</td><td>1.5</td><td>1.2</td></tr>
+                            <tr><td>13th</td><td>1.5</td><td>1.2</td></tr>
+                            <tr><td>THD</td><td>3.0</td><td>2.4</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-section">
+                    <h2>⏱️ Typical GPS Timeline</h2>
+                    <ul>
+                        <li><strong>Preparation:</strong> 2-3 months (studies, documentation)</li>
+                        <li><strong>Initial AEMO Review:</strong> 20-30 business days</li>
+                        <li><strong>RFI Response:</strong> 15-20 business days per round</li>
+                        <li><strong>Typical RFI Rounds:</strong> 2-4 iterations</li>
+                        <li><strong>Total Expected Duration:</strong> 4-6 months (simple) to 6-9 months (complex)</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>🔗 Key NEM Clauses</h2>
+                    <ul>
+                        <li><strong>Clause 5.2.2:</strong> Preliminary enquiry</li>
+                        <li><strong>Clause 5.2.3:</strong> Connection application</li>
+                        <li><strong>Clause 5.2.5:</strong> Performance standards negotiation</li>
+                        <li><strong>Clause 5.2.5.1:</strong> Voltage control capability</li>
+                        <li><strong>Clause 5.2.5.2:</strong> Reactive power capability</li>
+                        <li><strong>Clause 5.2.5.3:</strong> Partial load operation</li>
+                        <li><strong>Clause 5.2.5.4:</strong> Quality of electricity generated</li>
+                        <li><strong>Clause 5.2.5.5:</strong> Disturbance ride-through</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>📖 Reference Documents</h2>
+                    <ul>
+                        <li><strong>NER:</strong> National Electricity Rules Chapter 5</li>
+                        <li><strong>AEMO GPS Template:</strong> Available from AEMO website</li>
+                        <li><strong>AS/NZS 61000.3.6:</strong> Harmonic emission assessment</li>
+                        <li><strong>IEC 61000-4-7:</strong> Harmonic measurement techniques</li>
+                        <li><strong>IEEE 1547:</strong> Interconnection standards (reference)</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <h2>👥 Key Contacts</h2>
+                    <ul>
+                        <li><strong>AEMO Connections Team:</strong> connections@aemo.com.au</li>
+                        <li><strong>Project Technical Lead:</strong> Check internal directory</li>
+                        <li><strong>Internal GPS Specialists:</strong> Check project resource list</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                question: "Which NER clause specifically covers the negotiation and agreement of generator performance standards?",
+                answers: [
+                    "Clause 5.2.2 - Preliminary Enquiry",
+                    "Clause 5.2.3 - Connection Application",
+                    "Clause 5.2.5 - Performance Standards",
+                    "Clause 5.2.7 - Commissioning and Testing"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is the typical Total Harmonic Distortion (THD) planning level for HV/EHV networks according to AS/NZS 61000.3.6?",
+                answers: [
+                    "2.0%",
+                    "2.4%",
+                    "3.0%",
+                    "5.0%"
+                ],
+                correct: 1
+            },
+            {
+                question: "In a GPS submission, which type of study is essential for assessing harmonic emissions from inverter-based generation?",
+                answers: [
+                    "Steady-state load flow only",
+                    "Short circuit analysis only",
+                    "Frequency-domain harmonics analysis",
+                    "Protection coordination study"
+                ],
+                correct: 2
+            },
+            {
+                question: "What is a common root cause of harmonic voltage issues that should be checked in harmonics studies?",
+                answers: [
+                    "High background voltage",
+                    "Network parallel resonance",
+                    "Excessive transformer capacity",
+                    "Low fault levels"
+                ],
+                correct: 1
+            },
+            {
+                question: "According to the module, what is the typical timeframe for AEMO's initial review of a GPS submission?",
+                answers: [
+                    "10-15 business days",
+                    "20-30 business days",
+                    "40-50 business days",
+                    "60-90 business days"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which of the following is NOT typically included in a GPS submission package?",
+                answers: [
+                    "Harmonics analysis",
+                    "Reactive power capability curves",
+                    "Project financial model",
+                    "Single line diagram"
+                ],
+                correct: 2
+            },
+            {
+                question: "For a BESS project with high-frequency harmonics approaching limits, what type of advanced study may be required?",
+                answers: [
+                    "Monte Carlo simulation",
+                    "Electromagnetic transient (EMT) study",
+                    "Probabilistic load flow",
+                    "Artificial intelligence prediction"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is identified as a key success factor for minimizing GPS review duration?",
+                answers: [
+                    "Submitting minimal documentation initially",
+                    "Providing thorough, complete documentation in initial submission",
+                    "Waiting for multiple RFIs before responding",
+                    "Using generic equipment data"
+                ],
+                correct: 1
+            }
+        ];
+
+        // Quiz State
+        let currentQuestion = 0;
+        let selectedAnswers = new Array(quizData.length).fill(null);
+        let quizCompleted = false;
+
+        // Initialize quiz
+        function initQuiz() {
+            loadQuestion();
+            updateProgress();
+        }
+
+        // Load current question
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('question-text').textContent = q.question;
+
+            const answersArea = document.getElementById('answers-area');
+            answersArea.innerHTML = '';
+
+            q.answers.forEach((answer, index) => {
+                const div = document.createElement('div');
+                div.className = 'answer-option';
+                if (selectedAnswers[currentQuestion] === index) {
+                    div.classList.add('selected');
+                }
+                div.textContent = answer;
+                div.onclick = () => selectAnswer(index);
+                answersArea.appendChild(div);
+            });
+
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent =
+                currentQuestion === quizData.length - 1 ? 'Finish Quiz →' : 'Next →';
+        }
+
+        // Select answer
+        function selectAnswer(index) {
+            selectedAnswers[currentQuestion] = index;
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                updateProgress();
+            } else {
+                // Finish quiz
+                showResults();
+            }
+        }
+
+        // Previous question
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                updateProgress();
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+        }
+
+        // Show results
+        function showResults() {
+            let correct = 0;
+            quizData.forEach((q, index) => {
+                if (selectedAnswers[index] === q.correct) {
+                    correct++;
+                }
+            });
+
+            const percentage = Math.round((correct / quizData.length) * 100);
+            const points = Math.round((correct / quizData.length) * 800);
+
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('results-card').style.display = 'block';
+            document.getElementById('final-score').textContent = percentage + '%';
+            document.getElementById('result-detail').textContent =
+                `You scored ${correct} out of ${quizData.length} questions correctly (${points} points)`;
+
+            if (percentage >= 90) {
+                document.getElementById('result-message').textContent = 'Outstanding! Expert Level!';
+            } else if (percentage >= 70) {
+                document.getElementById('result-message').textContent = 'Well Done! You Passed!';
+            } else {
+                document.getElementById('result-message').textContent = 'Keep Learning - Review the material and try again';
+            }
+        }
+
+        // Retake quiz
+        function retakeQuiz() {
+            currentQuestion = 0;
+            selectedAnswers = new Array(quizData.length).fill(null);
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('quiz-area').style.display = 'block';
+            initQuiz();
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+
+            // Change background
+            changeBackground(tabName);
+        }
+
+        // Background changing
+        function changeBackground(tabName) {
+            const backgrounds = document.querySelectorAll('.background-layer');
+            backgrounds.forEach(bg => bg.classList.remove('active'));
+
+            const activeBg = document.getElementById('bg-' + tabName);
+            if (activeBg) {
+                activeBg.classList.add('active');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            changeBackground('welcome');
+            initQuiz();
+        });
+    </script>
+</body>
+</html>
