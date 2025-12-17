@@ -793,9 +793,15 @@
                 <span>🔓</span> Sign in with Passkey
             </button>
 
+            <div class="login-divider">or</div>
+
+            <button class="login-btn secondary" id="simple-login-btn" onclick="simpleEmailLogin()">
+                <span>📧</span> Quick Sign in (Email Only)
+            </button>
+
             <p class="login-info">
                 Only @vysusgroup.com email addresses are permitted.<br>
-                Your passkey is stored securely on this device.
+                Passkeys provide extra security but email login is also available.
             </p>
         </div>
     </div>
@@ -2886,11 +2892,10 @@
                         { alg: -257, type: "public-key" }  // RS256
                     ],
                     authenticatorSelection: {
-                        authenticatorAttachment: "platform",
                         userVerification: "preferred",
                         residentKey: "preferred"
                     },
-                    timeout: 60000,
+                    timeout: 120000,
                     attestation: "none"
                 };
 
@@ -2973,6 +2978,25 @@
                     showLoginError('Failed to authenticate. Please try again or register a new passkey.');
                 }
             }
+        }
+
+        // Simple email login (fallback when passkeys don't work)
+        function simpleEmailLogin() {
+            hideLoginError();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+
+            if (!email) {
+                showLoginError('Please enter your email address.');
+                return;
+            }
+
+            if (!isValidVysusEmail(email)) {
+                showLoginError('Only @vysusgroup.com email addresses are permitted.');
+                return;
+            }
+
+            // Simple email validation passed - log them in
+            loginUser(email);
         }
 
         // Complete login
