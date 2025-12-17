@@ -104,6 +104,18 @@
             background-image: url('https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1920&q=90');
         }
 
+        #bg-university {
+            background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=90');
+        }
+
+        #bg-tests {
+            background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1920&q=90');
+        }
+
+        #bg-schedule {
+            background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1920&q=90');
+        }
+
         /* Tab Navigation */
         .tab-navigation {
             position: fixed;
@@ -556,9 +568,247 @@
                 font-size: 0.75rem;
             }
         }
+
+        /* Passkey Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--hellerup-royal) 0%, var(--barcelona-dusk) 50%, var(--malmo-green) 100%);
+            z-index: 100000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(60px);
+            -webkit-backdrop-filter: blur(60px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .login-email-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-email-input:focus {
+            outline: none;
+            border-color: var(--stockholm-neon);
+            box-shadow: 0 0 20px rgba(0, 227, 169, 0.3);
+        }
+
+        .login-email-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 227, 169, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .login-error {
+            color: var(--orlando-red);
+            background: rgba(249, 45, 99, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-info {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .login-divider::before {
+            margin-right: 1rem;
+        }
+
+        .login-divider::after {
+            margin-left: 1rem;
+        }
+
+        .logged-in-user {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .logged-in-user span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        .logout-btn {
+            background: rgba(249, 45, 99, 0.2);
+            border: none;
+            color: var(--orlando-red);
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(249, 45, 99, 0.4);
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        .main-content.visible {
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <!-- Passkey Login Overlay -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card">
+            <div class="login-logo">🔐</div>
+            <h1 class="login-title">Training Portal</h1>
+            <p class="login-subtitle">Sign in with your Vysus Group email</p>
+
+            <div class="login-error" id="login-error"></div>
+
+            <input type="email"
+                   class="login-email-input"
+                   id="login-email"
+                   placeholder="your.name@vysusgroup.com"
+                   autocomplete="email webauthn">
+
+            <button class="login-btn" id="register-passkey-btn" onclick="registerPasskey()">
+                <span>🔑</span> Register Passkey
+            </button>
+
+            <div class="login-divider">or</div>
+
+            <button class="login-btn secondary" id="login-passkey-btn" onclick="loginWithPasskey()">
+                <span>🔓</span> Sign in with Passkey
+            </button>
+
+            <p class="login-info">
+                Only @vysusgroup.com email addresses are permitted.<br>
+                Your passkey is stored securely on this device.
+            </p>
+        </div>
+    </div>
+
+    <!-- Logged In User Display -->
+    <div class="logged-in-user" id="user-display" style="display: none;">
+        <span id="user-email"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content" id="main-content">
+
     <!-- Dynamic Backgrounds -->
     <div class="background-container">
         <div class="background-layer active" id="bg-overview"></div>
@@ -568,6 +818,9 @@
         <div class="background-layer" id="bg-principal"></div>
         <div class="background-layer" id="bg-technical"></div>
         <div class="background-layer" id="bg-design"></div>
+        <div class="background-layer" id="bg-university"></div>
+        <div class="background-layer" id="bg-tests"></div>
+        <div class="background-layer" id="bg-schedule"></div>
     </div>
 
     <!-- Tab Navigation -->
@@ -592,6 +845,15 @@
         </button>
         <button class="tab-btn" onclick="switchTab('design')" data-tab="design">
             📝 Design
+        </button>
+        <button class="tab-btn" onclick="switchTab('university')" data-tab="university">
+            🎓 University
+        </button>
+        <button class="tab-btn" onclick="switchTab('tests')" data-tab="tests">
+            📋 Tests
+        </button>
+        <button class="tab-btn" onclick="openSchedule()" data-tab="schedule">
+            📅 Schedule
         </button>
     </nav>
 
@@ -1432,6 +1694,408 @@
             </div>
         </div>
 
+        <!-- UNIVERSITY TAB -->
+        <div class="tab-content" id="university-content">
+            <div class="glass-hero">
+                <h1>🎓 Vysus University</h1>
+                <p class="tagline">Career Progression Framework</p>
+                <p class="subtitle">Formal criteria for advancing through engineering levels</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2>About the University Program</h2>
+                    <p>
+                        The Vysus University program formalizes the career progression pathway for Grid Connection Engineers.
+                        Advancement through each level requires demonstrated competency in both technical skills and professional
+                        capabilities. Promotion assessments are conducted annually.
+                    </p>
+                    <div class="info-box" style="background: rgba(75, 129, 239, 0.15); border-left: 4px solid var(--bath-sky); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+                        <h4 style="color: var(--bath-sky); margin: 0 0 0.5rem 0;">Annual Assessment Cycle</h4>
+                        <p style="margin: 0;">Promotion assessments are conducted once per year. Engineers who meet the criteria for the next level
+                        will be invited to complete the formal assessment process, including a technical test and panel review.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entry to Senior -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); padding: 0.5rem 1rem; border-radius: 10px;">Entry</span>
+                        <span style="color: var(--stockholm-neon);">→</span>
+                        <span style="background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal)); padding: 0.5rem 1rem; border-radius: 10px;">Senior</span>
+                    </h2>
+
+                    <h3 style="color: var(--stockholm-neon); margin-top: 2rem;">Technical Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Completed all Entry Level training modules (minimum 80% average score)</li>
+                        <li>Demonstrated understanding of NER Chapter 5 connection process</li>
+                        <li>Contributed to at least 3 GPS submissions under supervision</li>
+                        <li>Basic proficiency in PSS/E or PSCAD simulation software</li>
+                        <li>Completed at least 2 power system studies (load flow, fault analysis)</li>
+                    </ul>
+
+                    <h3 style="color: var(--bath-sky); margin-top: 2rem;">Professional Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Minimum 18 months experience at Entry Level</li>
+                        <li>Demonstrated ability to work independently on defined tasks</li>
+                        <li>Strong written and verbal communication skills</li>
+                        <li>Positive feedback from project leads and clients</li>
+                        <li>Active participation in team knowledge sharing</li>
+                    </ul>
+
+                    <h3 style="color: var(--mumbai-magenta); margin-top: 2rem;">Assessment Components</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li><strong>Technical Test:</strong> Senior Engineer Technical Assessment (see Tests section)</li>
+                        <li><strong>Portfolio Review:</strong> Documentation of project contributions</li>
+                        <li><strong>Panel Interview:</strong> 45-minute review with Lead/Principal engineers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Senior to Lead -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal)); padding: 0.5rem 1rem; border-radius: 10px;">Senior</span>
+                        <span style="color: var(--stockholm-neon);">→</span>
+                        <span style="background: linear-gradient(135deg, var(--houston-pink), var(--mumbai-magenta)); padding: 0.5rem 1rem; border-radius: 10px;">Lead</span>
+                    </h2>
+
+                    <h3 style="color: var(--stockholm-neon); margin-top: 2rem;">Technical Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Completed all Senior Level training modules (minimum 85% average score)</li>
+                        <li>Led at least 5 GPS submissions as primary engineer</li>
+                        <li>Advanced proficiency in PSS/E and PSCAD simulation software</li>
+                        <li>Demonstrated expertise in at least 2 specialist areas (harmonics, protection, system strength, etc.)</li>
+                        <li>Successfully managed AEMO RFI processes independently</li>
+                        <li>Contributed to development of technical procedures or guidelines</li>
+                    </ul>
+
+                    <h3 style="color: var(--bath-sky); margin-top: 2rem;">Professional Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Minimum 3 years experience at Senior Level</li>
+                        <li>Demonstrated mentoring of junior engineers</li>
+                        <li>Led client meetings and technical presentations</li>
+                        <li>Managed project budgets and schedules independently</li>
+                        <li>Strong stakeholder management skills (AEMO, NSPs, clients)</li>
+                    </ul>
+
+                    <h3 style="color: var(--mumbai-magenta); margin-top: 2rem;">Assessment Components</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li><strong>Technical Test:</strong> Lead Engineer Technical Assessment (see Tests section)</li>
+                        <li><strong>Case Study Presentation:</strong> 30-minute presentation on complex project</li>
+                        <li><strong>Leadership Assessment:</strong> 360-degree feedback from team members</li>
+                        <li><strong>Panel Interview:</strong> 60-minute review with Principal engineers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Lead to Principal -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--houston-pink), var(--mumbai-magenta)); padding: 0.5rem 1rem; border-radius: 10px;">Lead</span>
+                        <span style="color: var(--stockholm-neon);">→</span>
+                        <span style="background: linear-gradient(135deg, var(--orlando-red), var(--barcelona-dusk)); padding: 0.5rem 1rem; border-radius: 10px;">Principal</span>
+                    </h2>
+
+                    <h3 style="color: var(--stockholm-neon); margin-top: 2rem;">Technical Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Completed all Lead Level training modules (minimum 90% average score)</li>
+                        <li>Recognised as technical authority in at least one major discipline</li>
+                        <li>Contributed to industry standards development or regulatory submissions</li>
+                        <li>Published technical papers or presented at industry conferences</li>
+                        <li>Designed innovative solutions to complex technical challenges</li>
+                        <li>Established as trusted advisor for major client accounts</li>
+                    </ul>
+
+                    <h3 style="color: var(--bath-sky); margin-top: 2rem;">Professional Requirements</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li>Minimum 4 years experience at Lead Level</li>
+                        <li>Successfully developed team members to Senior/Lead levels</li>
+                        <li>Strategic contribution to business development</li>
+                        <li>P&L responsibility or significant commercial oversight</li>
+                        <li>Industry recognition and external network</li>
+                    </ul>
+
+                    <h3 style="color: var(--mumbai-magenta); margin-top: 2rem;">Assessment Components</h3>
+                    <ul style="margin-left: 2rem;">
+                        <li><strong>Technical Test:</strong> Principal Engineer Technical Assessment (see Tests section)</li>
+                        <li><strong>Strategic Presentation:</strong> Vision for technical discipline or market area</li>
+                        <li><strong>Business Case:</strong> Demonstrated commercial impact and client development</li>
+                        <li><strong>Executive Interview:</strong> 90-minute review with Director and Principal panel</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TESTS TAB -->
+        <div class="tab-content" id="tests-content">
+            <div class="glass-hero">
+                <h1>📋 Promotion Tests</h1>
+                <p class="tagline">Formal Assessment for Level Progression</p>
+                <p class="subtitle">Comprehensive evaluations developed by Principal Engineers</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2>About Promotion Tests</h2>
+                    <p>
+                        These formal assessments are designed to evaluate an engineer's readiness for promotion to the next level.
+                        Each test has been developed by the Principal Engineers in the Grid Connection Engineering group to ensure
+                        comprehensive coverage of the technical and professional competencies required at each level.
+                    </p>
+                    <div class="warning-box" style="background: rgba(249, 45, 99, 0.15); border-left: 4px solid var(--orlando-red); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+                        <h4 style="color: var(--orlando-red); margin: 0 0 0.5rem 0;">Prerequisites</h4>
+                        <p style="margin: 0;">Before taking a promotion test, engineers must have:</p>
+                        <ul style="margin: 0.5rem 0 0 1.5rem;">
+                            <li>Completed the required training modules for their current level</li>
+                            <li>Met the minimum experience requirements outlined in the University section</li>
+                            <li>Received approval from their Line Manager to proceed with assessment</li>
+                            <li>Spent adequate time on projects developing practical skills</li>
+                        </ul>
+                    </div>
+                    <div class="info-box" style="background: rgba(75, 129, 239, 0.15); border-left: 4px solid var(--bath-sky); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0;">
+                        <h4 style="color: var(--bath-sky); margin: 0 0 0.5rem 0;">How Tests Are Administered</h4>
+                        <p style="margin: 0;">Promotion tests are conducted under supervised conditions. The test is sent to the candidate
+                        by their Line Manager, and must be completed within the allocated time. Results are reviewed by the assessment
+                        panel before the panel interview.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Senior Test -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal)); padding: 0.5rem 1rem; border-radius: 10px;">Senior Engineer Test</span>
+                    </h2>
+                    <p style="color: rgba(255,255,255,0.8);">Assessment for Entry Level engineers seeking promotion to Senior</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--stockholm-neon); margin-bottom: 0.5rem;">90</div>
+                            <div style="color: rgba(255,255,255,0.8);">Minutes</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--stockholm-neon); margin-bottom: 0.5rem;">40</div>
+                            <div style="color: rgba(255,255,255,0.8);">Questions</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--stockholm-neon); margin-bottom: 0.5rem;">75%</div>
+                            <div style="color: rgba(255,255,255,0.8);">Pass Mark</div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--bath-sky);">Topics Covered</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>NER Chapter 5 connection process and requirements</li>
+                        <li>GPS template structure and Schedule 5.2 requirements</li>
+                        <li>Basic power system analysis (load flow, fault analysis)</li>
+                        <li>Access standards interpretation</li>
+                        <li>Stakeholder roles and responsibilities</li>
+                        <li>Professional communication and project basics</li>
+                    </ul>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 0;">
+                            <strong>Status:</strong> Test available - contact your Line Manager to schedule
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lead Test -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--houston-pink), var(--mumbai-magenta)); padding: 0.5rem 1rem; border-radius: 10px;">Lead Engineer Test</span>
+                    </h2>
+                    <p style="color: rgba(255,255,255,0.8);">Assessment for Senior engineers seeking promotion to Lead</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--houston-pink); margin-bottom: 0.5rem;">120</div>
+                            <div style="color: rgba(255,255,255,0.8);">Minutes</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--houston-pink); margin-bottom: 0.5rem;">50</div>
+                            <div style="color: rgba(255,255,255,0.8);">Questions</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--houston-pink); margin-bottom: 0.5rem;">80%</div>
+                            <div style="color: rgba(255,255,255,0.8);">Pass Mark</div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--houston-pink);">Topics Covered</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>Advanced GPS negotiation and AEMO RFI management</li>
+                        <li>Complex power system phenomena (harmonics, system strength, stability)</li>
+                        <li>Protection coordination and fault ride-through analysis</li>
+                        <li>Commercial aspects of grid connections</li>
+                        <li>Project management and risk assessment</li>
+                        <li>Technical leadership and mentoring scenarios</li>
+                        <li>Case study analysis</li>
+                    </ul>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 0;">
+                            <strong>Status:</strong> Test available - contact your Line Manager to schedule
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Principal Test -->
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2 style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: linear-gradient(135deg, var(--orlando-red), var(--barcelona-dusk)); padding: 0.5rem 1rem; border-radius: 10px;">Principal Engineer Test</span>
+                    </h2>
+                    <p style="color: rgba(255,255,255,0.8);">Assessment for Lead engineers seeking promotion to Principal</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--orlando-red); margin-bottom: 0.5rem;">180</div>
+                            <div style="color: rgba(255,255,255,0.8);">Minutes</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--orlando-red); margin-bottom: 0.5rem;">30</div>
+                            <div style="color: rgba(255,255,255,0.8);">Questions</div>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                            <div style="font-size: 2rem; color: var(--orlando-red); margin-bottom: 0.5rem;">85%</div>
+                            <div style="color: rgba(255,255,255,0.8);">Pass Mark</div>
+                        </div>
+                    </div>
+
+                    <h4 style="color: var(--orlando-red);">Topics Covered</h4>
+                    <ul style="margin-left: 2rem;">
+                        <li>Strategic technical problem solving</li>
+                        <li>Industry regulation and standards development</li>
+                        <li>Complex multi-stakeholder scenarios</li>
+                        <li>Business development and commercial strategy</li>
+                        <li>Team development and succession planning</li>
+                        <li>Technical innovation and thought leadership</li>
+                        <li>Extended case study with written analysis</li>
+                    </ul>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 0;">
+                            <strong>Status:</strong> Test available - contact your Line Manager to schedule
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCHEDULE TAB (Password Protected) -->
+        <div class="tab-content" id="schedule-content">
+            <div class="glass-hero">
+                <h1>📅 Training Schedule</h1>
+                <p class="tagline">Staff Training Progress Tracker</p>
+                <p class="subtitle">Module completion status by quarter</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2>Enter Completion Code</h2>
+                    <p>When a staff member completes a training module, they will receive a completion code. Enter the code below to record their completion.</p>
+
+                    <div style="display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap;">
+                        <input type="text" id="completion-code-input" placeholder="Enter completion code (e.g., VYS-ABC123-XYZ)"
+                            style="flex: 1; min-width: 300px; padding: 1rem 1.5rem; border-radius: 15px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1.1rem; font-family: monospace;">
+                        <button onclick="validateCompletionCode()"
+                            style="padding: 1rem 2rem; border-radius: 15px; border: none; background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); color: white; font-weight: 700; cursor: pointer; font-size: 1rem;">
+                            Validate Code
+                        </button>
+                    </div>
+                    <div id="code-validation-result" style="margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none;"></div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2>2025 Training Schedule</h2>
+                    <p style="margin-bottom: 2rem;">Track module completions for each staff member by quarter. Click a checkbox to manually toggle completion status.</p>
+
+                    <div style="overflow-x: auto;">
+                        <table class="schedule-table" style="width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px;">
+                            <thead>
+                                <tr style="background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green));">
+                                    <th style="padding: 1rem; text-align: left; color: white; font-weight: 700; position: sticky; left: 0; background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); min-width: 150px;">Staff Member</th>
+                                    <th colspan="3" style="padding: 1rem; text-align: center; color: white; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.3);">Q1 (Jan-Mar)</th>
+                                    <th colspan="3" style="padding: 1rem; text-align: center; color: white; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.3);">Q2 (Apr-Jun)</th>
+                                    <th colspan="3" style="padding: 1rem; text-align: center; color: white; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.3);">Q3 (Jul-Sep)</th>
+                                    <th colspan="3" style="padding: 1rem; text-align: center; color: white; font-weight: 700; border-left: 2px solid rgba(255,255,255,0.3);">Q4 (Oct-Dec)</th>
+                                </tr>
+                                <tr style="background: rgba(255,255,255,0.1);">
+                                    <th style="padding: 0.5rem; text-align: left; color: rgba(255,255,255,0.8); font-size: 0.75rem; position: sticky; left: 0; background: rgba(30,30,30,0.9);"></th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem; border-left: 2px solid rgba(255,255,255,0.2);">NER Ch5</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">Access Std</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">GPS Proc</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem; border-left: 2px solid rgba(255,255,255,0.2);">NER Ch5</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">Access Std</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">GPS Proc</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem; border-left: 2px solid rgba(255,255,255,0.2);">NER Ch5</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">Access Std</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">GPS Proc</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem; border-left: 2px solid rgba(255,255,255,0.2);">NER Ch5</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">Access Std</th>
+                                    <th style="padding: 0.5rem; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.7rem;">GPS Proc</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedule-table-body">
+                                <!-- Rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button onclick="addStaffMember()" style="padding: 0.75rem 1.5rem; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--bath-sky), var(--hellerup-royal)); color: white; font-weight: 600; cursor: pointer;">
+                            + Add Staff Member
+                        </button>
+                        <button onclick="exportScheduleData()" style="padding: 0.75rem 1.5rem; border-radius: 10px; border: 1px solid var(--stockholm-neon); background: transparent; color: var(--stockholm-neon); font-weight: 600; cursor: pointer;">
+                            Export Data
+                        </button>
+                        <button onclick="clearScheduleData()" style="padding: 0.75rem 1.5rem; border-radius: 10px; border: 1px solid var(--orlando-red); background: transparent; color: var(--orlando-red); font-weight: 600; cursor: pointer;">
+                            Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="content-section" style="color: white;">
+                    <h2>Completion Log</h2>
+                    <p>History of validated completion codes</p>
+                    <div id="completion-log" style="max-height: 300px; overflow-y: auto; margin-top: 1rem;">
+                        <!-- Log entries will be populated by JavaScript -->
+                        <p style="color: rgba(255,255,255,0.5); font-style: italic;">No completions recorded yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Modal -->
+        <div id="password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100000; justify-content: center; align-items: center;">
+            <div style="background: rgba(30,30,30,0.95); backdrop-filter: blur(20px); padding: 3rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); max-width: 400px; text-align: center;">
+                <h2 style="color: white; margin-bottom: 1rem;">Schedule Access</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Enter password to access the training schedule</p>
+                <input type="password" id="schedule-password" placeholder="Enter password"
+                    style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-size: 1.1rem; margin-bottom: 1rem;"
+                    onkeypress="if(event.key==='Enter') checkSchedulePassword()">
+                <div id="password-error" style="color: var(--orlando-red); margin-bottom: 1rem; display: none;">Incorrect password</div>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="closePasswordModal()" style="flex: 1; padding: 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: transparent; color: white; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button onclick="checkSchedulePassword()" style="flex: 1; padding: 1rem; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--stockholm-neon), var(--malmo-green)); color: white; font-weight: 700; cursor: pointer;">Access</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <style>
@@ -1739,6 +2403,647 @@
                 loadNotes();
             }
         }
+
+        // ========== SCHEDULE TAB FUNCTIONALITY ==========
+
+        const SCHEDULE_PASSWORD = '1234';
+        let scheduleUnlocked = false;
+
+        // Schedule Storage Keys
+        const SCHEDULE_STORAGE = {
+            staff: 'training-schedule-staff',
+            completions: 'training-schedule-completions',
+            log: 'training-schedule-log'
+        };
+
+        // Module definitions for schedule
+        const MODULES = {
+            'ner-ch5': { name: 'NER Chapter 5 Introduction', shortName: 'NER Ch5', points: 500 },
+            'access-std': { name: 'Access Standards & GPS Framework', shortName: 'Access Std', points: 600 },
+            'gps-proc': { name: 'AEMO GPS Document Process', shortName: 'GPS Proc', points: 800 }
+        };
+
+        // Open Schedule (with password protection)
+        function openSchedule() {
+            if (scheduleUnlocked) {
+                switchTab('schedule');
+            } else {
+                document.getElementById('password-modal').style.display = 'flex';
+                document.getElementById('schedule-password').focus();
+            }
+        }
+
+        function checkSchedulePassword() {
+            const password = document.getElementById('schedule-password').value;
+            if (password === SCHEDULE_PASSWORD) {
+                scheduleUnlocked = true;
+                closePasswordModal();
+                switchTab('schedule');
+                initScheduleTab();
+            } else {
+                document.getElementById('password-error').style.display = 'block';
+                document.getElementById('schedule-password').value = '';
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').style.display = 'none';
+            document.getElementById('schedule-password').value = '';
+            document.getElementById('password-error').style.display = 'none';
+        }
+
+        // Initialize Schedule Tab
+        function initScheduleTab() {
+            loadScheduleData();
+            renderScheduleTable();
+            renderCompletionLog();
+        }
+
+        // Get staff data
+        function getStaffData() {
+            return JSON.parse(localStorage.getItem(SCHEDULE_STORAGE.staff) || '[]');
+        }
+
+        // Save staff data
+        function saveStaffData(data) {
+            localStorage.setItem(SCHEDULE_STORAGE.staff, JSON.stringify(data));
+        }
+
+        // Get completions data
+        function getCompletionsData() {
+            return JSON.parse(localStorage.getItem(SCHEDULE_STORAGE.completions) || '{}');
+        }
+
+        // Save completions data
+        function saveCompletionsData(data) {
+            localStorage.setItem(SCHEDULE_STORAGE.completions, JSON.stringify(data));
+        }
+
+        // Get completion log
+        function getCompletionLog() {
+            return JSON.parse(localStorage.getItem(SCHEDULE_STORAGE.log) || '[]');
+        }
+
+        // Save completion log
+        function saveCompletionLog(log) {
+            localStorage.setItem(SCHEDULE_STORAGE.log, JSON.stringify(log));
+        }
+
+        // Load schedule data
+        function loadScheduleData() {
+            const staff = getStaffData();
+            if (staff.length === 0) {
+                // Initialize with actual team members
+                const teamStaff = [
+                    { id: 1, name: 'Anthony Morton', level: 'Principal' },
+                    { id: 2, name: 'Naveen Rajagopal', level: 'Principal' },
+                    { id: 3, name: 'Chris Marinelli', level: 'Lead' },
+                    { id: 4, name: 'Eduardo Jr Laygo', level: 'Senior' },
+                    { id: 5, name: 'Komal Gaikwad', level: 'Senior' },
+                    { id: 6, name: 'Md Momtazur Rahman', level: 'Senior' },
+                    { id: 7, name: 'Zabir Uddin Hussainy Syed', level: 'Senior' },
+                    { id: 8, name: 'Hayden Brunjes', level: 'Entry' },
+                    { id: 9, name: 'Dom Moncada', level: 'Entry' },
+                    { id: 10, name: 'Khadija Tul Kobra', level: 'Entry' },
+                    { id: 11, name: 'Amani Syafiqah', level: 'Entry' },
+                    { id: 12, name: 'Shahrul Azri', level: 'Entry' },
+                    { id: 13, name: 'Arif Kandanari', level: 'Entry' },
+                    { id: 14, name: 'Syafiq Ishamuddin', level: 'Entry' },
+                    { id: 15, name: 'Abhinit', level: 'Entry' },
+                    { id: 16, name: 'Parthena Savvidis', level: 'Admin' }
+                ];
+                saveStaffData(teamStaff);
+            }
+        }
+
+        // Render schedule table
+        function renderScheduleTable() {
+            const tbody = document.getElementById('schedule-table-body');
+            if (!tbody) return;
+
+            const staff = getStaffData();
+            const completions = getCompletionsData();
+            const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+            const modules = ['ner-ch5', 'access-std', 'gps-proc'];
+
+            tbody.innerHTML = staff.map(person => {
+                let cells = `<td style="padding: 1rem; color: white; font-weight: 600; position: sticky; left: 0; background: rgba(30,30,30,0.95); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    ${escapeHtml(person.name)}
+                    <div style="font-size: 0.75rem; color: var(--stockholm-neon); font-weight: 400;">${person.level}</div>
+                    <button onclick="removeStaffMember(${person.id})" style="font-size: 0.7rem; color: var(--orlando-red); background: none; border: none; cursor: pointer; margin-top: 0.25rem;">Remove</button>
+                </td>`;
+
+                quarters.forEach((quarter, qIndex) => {
+                    modules.forEach((module, mIndex) => {
+                        const key = `${person.id}-${quarter}-${module}`;
+                        const isCompleted = completions[key] || false;
+                        const borderLeft = mIndex === 0 ? 'border-left: 2px solid rgba(255,255,255,0.2);' : '';
+
+                        cells += `<td style="padding: 0.5rem; text-align: center; ${borderLeft} border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <label style="cursor: pointer; display: flex; justify-content: center; align-items: center;">
+                                <input type="checkbox" ${isCompleted ? 'checked' : ''}
+                                    onchange="toggleCompletion('${key}')"
+                                    style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--stockholm-neon);">
+                            </label>
+                        </td>`;
+                    });
+                });
+
+                return `<tr>${cells}</tr>`;
+            }).join('');
+        }
+
+        // Toggle completion status
+        function toggleCompletion(key) {
+            const completions = getCompletionsData();
+            completions[key] = !completions[key];
+            saveCompletionsData(completions);
+        }
+
+        // Add staff member
+        function addStaffMember() {
+            const name = prompt('Enter staff member name:');
+            if (!name || !name.trim()) return;
+
+            const level = prompt('Enter level (Entry, Senior, Lead, Principal):', 'Entry');
+            if (!level) return;
+
+            const staff = getStaffData();
+            const newId = Math.max(0, ...staff.map(s => s.id)) + 1;
+            staff.push({ id: newId, name: name.trim(), level: level.trim() });
+            saveStaffData(staff);
+            renderScheduleTable();
+        }
+
+        // Remove staff member
+        function removeStaffMember(id) {
+            if (!confirm('Remove this staff member from the schedule?')) return;
+
+            let staff = getStaffData();
+            staff = staff.filter(s => s.id !== id);
+            saveStaffData(staff);
+            renderScheduleTable();
+        }
+
+        // Validate completion code
+        function validateCompletionCode() {
+            const input = document.getElementById('completion-code-input');
+            const resultDiv = document.getElementById('code-validation-result');
+            const code = input.value.trim().toUpperCase();
+
+            if (!code) {
+                showValidationResult(resultDiv, false, 'Please enter a completion code.');
+                return;
+            }
+
+            // Decode the completion code
+            // Format: VYS-{MODULE_CODE}{SCORE_ENCODED}-{NAME_HASH}{DATE_CODE}
+            const decoded = decodeCompletionCode(code);
+
+            if (decoded) {
+                // Find or create staff member
+                const staff = getStaffData();
+                let person = staff.find(s => s.name.toLowerCase() === decoded.name.toLowerCase());
+
+                if (!person) {
+                    // Ask if we should add this person
+                    if (confirm(`Staff member "${decoded.name}" not found. Add them to the schedule?`)) {
+                        const level = prompt('Enter their level (Entry, Senior, Lead, Principal):', 'Entry');
+                        const newId = Math.max(0, ...staff.map(s => s.id)) + 1;
+                        person = { id: newId, name: decoded.name, level: level || 'Entry' };
+                        staff.push(person);
+                        saveStaffData(staff);
+                    } else {
+                        showValidationResult(resultDiv, false, 'Code validation cancelled.');
+                        return;
+                    }
+                }
+
+                // Determine quarter from date
+                const quarter = getQuarterFromDate(decoded.date);
+
+                // Record completion
+                const completions = getCompletionsData();
+                const key = `${person.id}-${quarter}-${decoded.moduleId}`;
+                completions[key] = true;
+                saveCompletionsData(completions);
+
+                // Add to log
+                const log = getCompletionLog();
+                log.unshift({
+                    timestamp: new Date().toISOString(),
+                    code: code,
+                    name: decoded.name,
+                    module: MODULES[decoded.moduleId]?.name || decoded.moduleId,
+                    score: decoded.score,
+                    quarter: quarter
+                });
+                saveCompletionLog(log);
+
+                // Update UI
+                renderScheduleTable();
+                renderCompletionLog();
+
+                showValidationResult(resultDiv, true,
+                    `<strong>Code Valid!</strong><br>
+                    Staff: ${decoded.name}<br>
+                    Module: ${MODULES[decoded.moduleId]?.name || decoded.moduleId}<br>
+                    Score: ${decoded.score}%<br>
+                    Quarter: ${quarter}`
+                );
+
+                input.value = '';
+            } else {
+                showValidationResult(resultDiv, false, 'Invalid completion code. Please check and try again.');
+            }
+        }
+
+        // Decode completion code
+        function decodeCompletionCode(code) {
+            try {
+                // Expected format: VYS-{6 chars}-{6 chars}
+                // The code encodes: module, score, name initials, date
+                const parts = code.split('-');
+                if (parts.length !== 3 || parts[0] !== 'VYS') return null;
+
+                const part1 = parts[1]; // Module code + encoded score
+                const part2 = parts[2]; // Name hash + date code
+
+                // Decode module
+                const moduleMap = {
+                    'NER': 'ner-ch5',
+                    'ACC': 'access-std',
+                    'GPS': 'gps-proc'
+                };
+                const moduleCode = part1.substring(0, 3);
+                const moduleId = moduleMap[moduleCode];
+                if (!moduleId) return null;
+
+                // Decode score (base36 encoded in next 3 chars)
+                const scoreEncoded = part1.substring(3, 6);
+                const score = parseInt(scoreEncoded, 36) % 101; // Score 0-100
+
+                // Decode name from part2 (first 3 chars are name code)
+                const nameCode = part2.substring(0, 3);
+
+                // For now, prompt for name since we can't reverse the hash
+                const name = prompt(`Enter the staff member's name for code verification:`, '');
+                if (!name) return null;
+
+                // Decode date (last 3 chars)
+                const dateCode = part2.substring(3, 6);
+                const dayOfYear = parseInt(dateCode, 36);
+                const year = 2025;
+                const date = new Date(year, 0, dayOfYear);
+
+                return {
+                    moduleId,
+                    score,
+                    name: name.trim(),
+                    date
+                };
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Get quarter from date
+        function getQuarterFromDate(date) {
+            const month = date.getMonth();
+            if (month < 3) return 'Q1';
+            if (month < 6) return 'Q2';
+            if (month < 9) return 'Q3';
+            return 'Q4';
+        }
+
+        // Show validation result
+        function showValidationResult(element, success, message) {
+            element.style.display = 'block';
+            element.style.background = success ? 'rgba(0, 227, 169, 0.2)' : 'rgba(249, 45, 99, 0.2)';
+            element.style.borderLeft = `4px solid ${success ? 'var(--stockholm-neon)' : 'var(--orlando-red)'}`;
+            element.innerHTML = `<span style="color: white;">${message}</span>`;
+        }
+
+        // Render completion log
+        function renderCompletionLog() {
+            const logDiv = document.getElementById('completion-log');
+            if (!logDiv) return;
+
+            const log = getCompletionLog();
+
+            if (log.length === 0) {
+                logDiv.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-style: italic;">No completions recorded yet.</p>';
+                return;
+            }
+
+            logDiv.innerHTML = log.slice(0, 50).map(entry => {
+                const date = new Date(entry.timestamp);
+                return `<div style="padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 0.5rem; border-left: 3px solid var(--stockholm-neon);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <strong style="color: white;">${escapeHtml(entry.name)}</strong>
+                            <span style="color: rgba(255,255,255,0.6); margin-left: 0.5rem;">${escapeHtml(entry.module)}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="color: var(--stockholm-neon); font-weight: 600;">${entry.score}%</span>
+                            <span style="color: rgba(255,255,255,0.5); margin-left: 0.5rem;">${entry.quarter}</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 0.25rem;">
+                        ${date.toLocaleDateString()} ${date.toLocaleTimeString()} | Code: ${entry.code}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Export schedule data
+        function exportScheduleData() {
+            const staff = getStaffData();
+            const completions = getCompletionsData();
+            const log = getCompletionLog();
+
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                staff,
+                completions,
+                log
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `training-schedule-export-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Clear schedule data
+        function clearScheduleData() {
+            if (!confirm('Are you sure you want to clear all schedule data? This cannot be undone.')) return;
+
+            localStorage.removeItem(SCHEDULE_STORAGE.staff);
+            localStorage.removeItem(SCHEDULE_STORAGE.completions);
+            localStorage.removeItem(SCHEDULE_STORAGE.log);
+
+            loadScheduleData();
+            renderScheduleTable();
+            renderCompletionLog();
+        }
+
+        // ==========================================
+        // PASSKEY AUTHENTICATION SYSTEM
+        // ==========================================
+
+        const AUTH_STORAGE_KEY = 'vysus_training_auth';
+        const CREDENTIAL_STORAGE_KEY = 'vysus_training_credentials';
+        const ALLOWED_DOMAIN = 'vysusgroup.com';
+
+        // Check if email is valid Vysus Group domain
+        function isValidVysusEmail(email) {
+            if (!email) return false;
+            const emailLower = email.toLowerCase().trim();
+            return emailLower.endsWith('@' + ALLOWED_DOMAIN);
+        }
+
+        // Show login error
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Hide login error
+        function hideLoginError() {
+            document.getElementById('login-error').style.display = 'none';
+        }
+
+        // Generate random bytes for WebAuthn
+        function generateRandomBytes(length) {
+            const array = new Uint8Array(length);
+            crypto.getRandomValues(array);
+            return array;
+        }
+
+        // Convert ArrayBuffer to Base64
+        function bufferToBase64(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
+        // Convert Base64 to ArrayBuffer
+        function base64ToBuffer(base64) {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Register a new passkey
+        async function registerPasskey() {
+            hideLoginError();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+
+            if (!email) {
+                showLoginError('Please enter your email address.');
+                return;
+            }
+
+            if (!isValidVysusEmail(email)) {
+                showLoginError('Only @vysusgroup.com email addresses are permitted.');
+                return;
+            }
+
+            // Check if WebAuthn is supported
+            if (!window.PublicKeyCredential) {
+                showLoginError('Passkeys are not supported in this browser. Please use a modern browser.');
+                return;
+            }
+
+            try {
+                const userId = generateRandomBytes(16);
+                const challenge = generateRandomBytes(32);
+
+                const publicKeyCredentialCreationOptions = {
+                    challenge: challenge,
+                    rp: {
+                        name: "Vysus Training Portal",
+                        id: window.location.hostname
+                    },
+                    user: {
+                        id: userId,
+                        name: email,
+                        displayName: email.split('@')[0]
+                    },
+                    pubKeyCredParams: [
+                        { alg: -7, type: "public-key" },   // ES256
+                        { alg: -257, type: "public-key" }  // RS256
+                    ],
+                    authenticatorSelection: {
+                        authenticatorAttachment: "platform",
+                        userVerification: "preferred",
+                        residentKey: "preferred"
+                    },
+                    timeout: 60000,
+                    attestation: "none"
+                };
+
+                const credential = await navigator.credentials.create({
+                    publicKey: publicKeyCredentialCreationOptions
+                });
+
+                if (credential) {
+                    // Store credential info locally
+                    const storedCredentials = JSON.parse(localStorage.getItem(CREDENTIAL_STORAGE_KEY) || '{}');
+                    storedCredentials[email] = {
+                        credentialId: bufferToBase64(credential.rawId),
+                        email: email,
+                        createdAt: new Date().toISOString()
+                    };
+                    localStorage.setItem(CREDENTIAL_STORAGE_KEY, JSON.stringify(storedCredentials));
+
+                    // Auto login after registration
+                    loginUser(email);
+                }
+            } catch (error) {
+                console.error('Passkey registration error:', error);
+                if (error.name === 'NotAllowedError') {
+                    showLoginError('Passkey registration was cancelled or not allowed.');
+                } else if (error.name === 'InvalidStateError') {
+                    showLoginError('A passkey for this account already exists on this device.');
+                } else {
+                    showLoginError('Failed to register passkey. Please try again.');
+                }
+            }
+        }
+
+        // Login with existing passkey
+        async function loginWithPasskey() {
+            hideLoginError();
+
+            if (!window.PublicKeyCredential) {
+                showLoginError('Passkeys are not supported in this browser.');
+                return;
+            }
+
+            try {
+                const challenge = generateRandomBytes(32);
+
+                const publicKeyCredentialRequestOptions = {
+                    challenge: challenge,
+                    rpId: window.location.hostname,
+                    userVerification: "preferred",
+                    timeout: 60000
+                };
+
+                const assertion = await navigator.credentials.get({
+                    publicKey: publicKeyCredentialRequestOptions
+                });
+
+                if (assertion) {
+                    // Find the email associated with this credential
+                    const storedCredentials = JSON.parse(localStorage.getItem(CREDENTIAL_STORAGE_KEY) || '{}');
+                    const credentialId = bufferToBase64(assertion.rawId);
+
+                    let foundEmail = null;
+                    for (const [email, cred] of Object.entries(storedCredentials)) {
+                        if (cred.credentialId === credentialId) {
+                            foundEmail = email;
+                            break;
+                        }
+                    }
+
+                    if (foundEmail && isValidVysusEmail(foundEmail)) {
+                        loginUser(foundEmail);
+                    } else {
+                        showLoginError('Passkey not recognized or email domain not permitted.');
+                    }
+                }
+            } catch (error) {
+                console.error('Passkey login error:', error);
+                if (error.name === 'NotAllowedError') {
+                    showLoginError('Login was cancelled or no passkeys available.');
+                } else {
+                    showLoginError('Failed to authenticate. Please try again or register a new passkey.');
+                }
+            }
+        }
+
+        // Complete login
+        function loginUser(email) {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+                email: email,
+                loginTime: new Date().toISOString()
+            }));
+
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('main-content').classList.add('visible');
+            document.getElementById('user-display').style.display = 'flex';
+            document.getElementById('user-email').textContent = email;
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            document.getElementById('login-overlay').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('visible');
+            document.getElementById('user-display').style.display = 'none';
+            document.getElementById('login-email').value = '';
+        }
+
+        // Check authentication on page load
+        function checkAuth() {
+            const authData = localStorage.getItem(AUTH_STORAGE_KEY);
+
+            if (authData) {
+                try {
+                    const auth = JSON.parse(authData);
+                    if (auth.email && isValidVysusEmail(auth.email)) {
+                        // Check if login is within 30 days
+                        const loginTime = new Date(auth.loginTime);
+                        const now = new Date();
+                        const daysSinceLogin = (now - loginTime) / (1000 * 60 * 60 * 24);
+
+                        if (daysSinceLogin < 30) {
+                            document.getElementById('login-overlay').classList.add('hidden');
+                            document.getElementById('main-content').classList.add('visible');
+                            document.getElementById('user-display').style.display = 'flex';
+                            document.getElementById('user-email').textContent = auth.email;
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Auth check error:', e);
+                }
+            }
+
+            // Not authenticated - show login
+            document.getElementById('login-overlay').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('visible');
+        }
+
+        // Handle Enter key on email input
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('login-email');
+            if (emailInput) {
+                emailInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        registerPasskey();
+                    }
+                });
+            }
+        });
+
+        // Initialize auth check
+        checkAuth();
     </script>
+
+    </div><!-- End main-content -->
 </body>
 </html>
